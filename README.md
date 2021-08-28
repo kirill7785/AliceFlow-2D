@@ -53,5 +53,5 @@ Cкорость, м/с
 * Обтекание квадратного цилиндра.
 ![alt_text](https://raw.githubusercontent.com/kirill7785/AliceFlow-2D/main/pic/Квадратный%20цилиндр%20RCh%200_0005.bmp)
 Cкорость, м/с
-![alt_text](https://raw.githubusercontent.com/kirill7785/AliceFlow-2D/main/pic/Давление%20обтекание%20квадрата.bmp)
+![alt_text]()
 Давление, Па
