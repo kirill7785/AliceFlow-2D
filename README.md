@@ -43,4 +43,9 @@ Cкорость, м/с
 Температура, С
 
 * Выращивание кристаллов методом Чохральского.
-
+![alt_text](https://raw.githubusercontent.com/kirill7785/AliceFlow-2D/main/pic/Скорость%20Чохральский.bmp)
+Cкорость, м/с
+![alt_text](https://raw.githubusercontent.com/kirill7785/AliceFlow-2D/main/pic/Давление%20Чохральский.bmp)
+Давление, Па
+![alt_text](https://raw.githubusercontent.com/kirill7785/AliceFlow-2D/main/pic/Температура%20%20Чохральский.bmp)
+Температура, С
