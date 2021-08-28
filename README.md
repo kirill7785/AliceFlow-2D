@@ -31,3 +31,11 @@ Cкорость, м/с
 
 ![alt_text](https://raw.githubusercontent.com/kirill7785/AliceFlow-2D/main/pic/змеевик%20Давление.bmp)
 Давление, Па
+
+Выращивание кристаллов методом Бриджмена
+![alt_text](https://raw.githubusercontent.com/kirill7785/AliceFlow-2D/main/pic/Скорость%20Бриджмен%202.bmp)
+Cкорость, м/с
+![alt_text](https://raw.githubusercontent.com/kirill7785/AliceFlow-2D/main/pic/Давление%20Бриджмен%202.bmp)
+Давление, Па
+![alt_text](https://raw.githubusercontent.com/kirill7785/AliceFlow-2D/main/pic/Температура%20Бриджмен%202.bmp)
+Температура, С
