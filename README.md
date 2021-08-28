@@ -49,3 +49,9 @@ Cкорость, м/с
 Давление, Па
 ![alt_text](https://raw.githubusercontent.com/kirill7785/AliceFlow-2D/main/pic/Температура%20%20Чохральский.bmp)
 Температура, С
+
+* Обтекание квадратного цилиндра.
+![alt_text](https://raw.githubusercontent.com/kirill7785/AliceFlow-2D/main/pic/Квадратный%20цилиндр%20RCh%200_0005.bmp)
+Cкорость, м/с
+![alt_text](https://raw.githubusercontent.com/kirill7785/AliceFlow-2D/main/pic/Давление%20обтекание%20квадрата.bmp)
+Давление, Па
