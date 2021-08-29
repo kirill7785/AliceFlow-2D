@@ -4,8 +4,8 @@
 // совмещённой сетке.
 
 #pragma once
-#ifndef MY_ELMATR_QUAD_F_C
-#define MY_ELMATR_QUAD_F_C 1
+#ifndef MY_ELMATR_QUAD_F_CPP
+#define MY_ELMATR_QUAD_F_CPP 1
 
 #include "amg1r5.cpp" // Алгебраический многосеточный метод Джона Руге и Клауса Штубена 1984 год. 
 #include "my_linalg.cpp" // самописные функции линейной алгебры

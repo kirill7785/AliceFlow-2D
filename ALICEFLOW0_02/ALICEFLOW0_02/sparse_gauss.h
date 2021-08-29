@@ -1,7 +1,7 @@
 // файл sparse_gauss.h 
 // Реализация метода Гаусса для разреженной матрицы.
 
-#define Real double
+//#define Real double
 
 // тип элемент
 typedef struct tagTERM{
