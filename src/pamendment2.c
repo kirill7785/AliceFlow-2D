@@ -1,7 +1,7 @@
 // pamendment2.c 
-// текущий рабочий вариант 
-// файла в котором составляется дискретный
-// аналог для уравнения поправки давления.
+// С‚РµРєСѓС‰РёР№ СЂР°Р±РѕС‡РёР№ РІР°СЂРёР°РЅС‚ 
+// С„Р°Р№Р»Р° РІ РєРѕС‚РѕСЂРѕРј СЃРѕСЃС‚Р°РІР»СЏРµС‚СЃСЏ РґРёСЃРєСЂРµС‚РЅС‹Р№
+// Р°РЅР°Р»РѕРі РґР»СЏ СѓСЂР°РІРЅРµРЅРёСЏ РїРѕРїСЂР°РІРєРё РґР°РІР»РµРЅРёСЏ.
 
 #pragma once
 #ifndef PAMENDMENTv_0_02_C
@@ -9,50 +9,50 @@
 
 
 
-// аппроксимация обобщённого уравнения конвекции-диффузии
-// на совмещённой сетке
+// Р°РїРїСЂРѕРєСЃРёРјР°С†РёСЏ РѕР±РѕР±С‰С‘РЅРЅРѕРіРѕ СѓСЂР°РІРЅРµРЅРёСЏ РєРѕРЅРІРµРєС†РёРё-РґРёС„С„СѓР·РёРё
+// РЅР° СЃРѕРІРјРµС‰С‘РЅРЅРѕР№ СЃРµС‚РєРµ
 #include "my_elmatr_quad_f.c"
 
 
-// коррекция скорости
+// РєРѕСЂСЂРµРєС†РёСЏ СЃРєРѕСЂРѕСЃС‚Рё
 void correct(int iP, equation** &sl, int iVar, 
 			 int** &nvtx, bool** &boundary, Real** &potent, Real** &sumanb, Real** &tau,
 			 Real* &x, Real* &y, int** &sosed, bool** &neiman,
 			 int** &norm, Real** &prop, int nve, Real* &alpha, Real** &B, 
 	Real**  & Flux_gran_relx, Real**& Flux_gran) {
 
-    // iP - номер центрального контрольного объёма
-	int iE, iN, iW, iS; // номера соседних контрольных объёмов
+    // iP - РЅРѕРјРµСЂ С†РµРЅС‚СЂР°Р»СЊРЅРѕРіРѕ РєРѕРЅС‚СЂРѕР»СЊРЅРѕРіРѕ РѕР±СЉС‘РјР°
+	int iE, iN, iW, iS; // РЅРѕРјРµСЂР° СЃРѕСЃРµРґРЅРёС… РєРѕРЅС‚СЂРѕР»СЊРЅС‹С… РѕР±СЉС‘РјРѕРІ
 	iE = qass[iP].iE; iN = qass[iP].iN; iW = qass[iP].iW; iS = qass[iP].iS;
 
     if (!(boundary[iVar][iP]) && (!neiman[iVar][iP])) {   
 
-        // условие Неймана 
-		// в случае если переменная равна true
+        // СѓСЃР»РѕРІРёРµ РќРµР№РјР°РЅР° 
+		// РІ СЃР»СѓС‡Р°Рµ РµСЃР»Рё РїРµСЂРµРјРµРЅРЅР°СЏ СЂР°РІРЅР° true
 		bool bE=false, bN=false, bW=false, bS=false;
         if ((boundary[iVar][iP]) && (neiman[iVar][iP])) {
 
-			// внешние нормали
+			// РІРЅРµС€РЅРёРµ РЅРѕСЂРјР°Р»Рё
 			switch (norm[0][iP]) {
 				case E : bE=true; break;
 				case N : bN=true; break;
 				case W : bW=true; break;
 				case S : bS=true; break;
-			} // первая нормаль
+			} // РїРµСЂРІР°СЏ РЅРѕСЂРјР°Р»СЊ
 
-			// внешние нормали
+			// РІРЅРµС€РЅРёРµ РЅРѕСЂРјР°Р»Рё
             switch (norm[1][iP]) {
 				case E : bE=true; break;
 				case N : bN=true; break;
 				case W : bW=true; break;
 				case S : bS=true; break;
-			} // вторая нормаль
+			} // РІС‚РѕСЂР°СЏ РЅРѕСЂРјР°Р»СЊ
 		}    
 
 		
-	    // вычисление размеров текущего контрольного объёма:
+	    // РІС‹С‡РёСЃР»РµРЅРёРµ СЂР°Р·РјРµСЂРѕРІ С‚РµРєСѓС‰РµРіРѕ РєРѕРЅС‚СЂРѕР»СЊРЅРѕРіРѕ РѕР±СЉС‘РјР°:
 	
-	    Real dx= qass[iP].dx, dy= qass[iP].dy; // размеры контрольного объёма
+	    Real dx= qass[iP].dx, dy= qass[iP].dy; // СЂР°Р·РјРµСЂС‹ РєРѕРЅС‚СЂРѕР»СЊРЅРѕРіРѕ РѕР±СЉС‘РјР°
 		//volume(iP, nve, nvtx, x, y, dx, dy);
 		//printf("%.2f %.2f\n",dx,dy); // debug GOOD
 		//system("pause");
@@ -89,7 +89,7 @@ void correct(int iP, equation** &sl, int iVar,
 	    fnplus=0.5*dy/dyn;
 	    fsplus=0.5*dy/dys;
 
-		// плотность аппроксимируется средним гармоническим
+		// РїР»РѕС‚РЅРѕСЃС‚СЊ Р°РїРїСЂРѕРєСЃРёРјРёСЂСѓРµС‚СЃСЏ СЃСЂРµРґРЅРёРј РіР°СЂРјРѕРЅРёС‡РµСЃРєРёРј
 		Real rhoe, rhow, rhon, rhos;
 		Real rP, rE, rN, rW, rS;
 
@@ -112,7 +112,7 @@ void correct(int iP, equation** &sl, int iVar,
 		if (iVar == Vx) dlr = dx;
 
 
-		//int i; // счётчик цикла for
+		//int i; // СЃС‡С‘С‚С‡РёРє С†РёРєР»Р° for
 		
 		//Real** B = new Real * [3];
 		//for (int l = 0; l < 3; l++) B[l] = new Real[3];
@@ -121,13 +121,13 @@ void correct(int iP, equation** &sl, int iVar,
 		Real PAmP, PAmW, PAmE, PAmS, PAmN;
 		PAmP=potent[PAm][iP];
         if ((!bW) && (iW > -1)) PAmW=potent[PAm][iW];
-		else { // квадратичная экстраполяция
-               // узла iW нету.
-				// надо восстановить давление PAmW в узле iW с помощью
-				// квадратичной экстраполяции
+		else { // РєРІР°РґСЂР°С‚РёС‡РЅР°СЏ СЌРєСЃС‚СЂР°РїРѕР»СЏС†РёСЏ
+               // СѓР·Р»Р° iW РЅРµС‚Сѓ.
+				// РЅР°РґРѕ РІРѕСЃСЃС‚Р°РЅРѕРІРёС‚СЊ РґР°РІР»РµРЅРёРµ PAmW РІ СѓР·Р»Рµ iW СЃ РїРѕРјРѕС‰СЊСЋ
+				// РєРІР°РґСЂР°С‚РёС‡РЅРѕР№ СЌРєСЃС‚СЂР°РїРѕР»СЏС†РёРё
                 Real xP, xE, xEE, xP2, xE2, xEE2, xW;
 				int iEE=sosed[EE][iP]-1;
-				// при условии отсутствия узла iW узел iEE всегда существует.
+				// РїСЂРё СѓСЃР»РѕРІРёРё РѕС‚СЃСѓС‚СЃС‚РІРёСЏ СѓР·Р»Р° iW СѓР·РµР» iEE РІСЃРµРіРґР° СЃСѓС‰РµСЃС‚РІСѓРµС‚.
                 xEE=0.25*(x[nvtx[0][iEE]-1]+x[nvtx[1][iEE]-1]+x[nvtx[2][iEE]-1]+x[nvtx[3][iEE]-1]);
 				xE=0.25*(x[nvtx[0][iE]-1]+x[nvtx[1][iE]-1]+x[nvtx[2][iE]-1]+x[nvtx[3][iE]-1]);
 				xP=0.25*(x[nvtx[0][iP]-1]+x[nvtx[1][iP]-1]+x[nvtx[2][iP]-1]+x[nvtx[3][iP]-1]);
@@ -136,7 +136,7 @@ void correct(int iP, equation** &sl, int iVar,
 				B[0][0]=1.0; B[0][1]=xP; B[0][2]=xP2;
 				B[1][0]=1.0; B[1][1]=xE; B[1][2]=xE2;
 				B[2][0]=1.0; B[2][1]=xEE; B[2][2]=xEE2;
-				inverse_matrix_simple(B, 3, false); // обращает матрицу
+				inverse_matrix_simple(B, 3, false); // РѕР±СЂР°С‰Р°РµС‚ РјР°С‚СЂРёС†Сѓ
 				xW=xP-dxw;
 				Real  PAmPloc, PAmEloc, PAmEEloc;
 				 PAmPloc=potent[PAm][iP]; PAmEloc=potent[PAm][iE]; PAmEEloc=potent[PAm][iEE];
@@ -145,12 +145,12 @@ void correct(int iP, equation** &sl, int iVar,
 				PAmW+=xW*xW*(B[2][0]*PAmPloc+B[2][1]*PAmEloc+B[2][2]*PAmEEloc); 
 		}
         if ((!bE) && (iE > -1)) PAmE=potent[PAm][iE];
-		else { // квадратичная экстраполяция
-                // узла iE нету.
-				// надо восстановить давление PAmE в узле iE с помощью
-				// квадратичной экстраполяции
+		else { // РєРІР°РґСЂР°С‚РёС‡РЅР°СЏ СЌРєСЃС‚СЂР°РїРѕР»СЏС†РёСЏ
+                // СѓР·Р»Р° iE РЅРµС‚Сѓ.
+				// РЅР°РґРѕ РІРѕСЃСЃС‚Р°РЅРѕРІРёС‚СЊ РґР°РІР»РµРЅРёРµ PAmE РІ СѓР·Р»Рµ iE СЃ РїРѕРјРѕС‰СЊСЋ
+				// РєРІР°РґСЂР°С‚РёС‡РЅРѕР№ СЌРєСЃС‚СЂР°РїРѕР»СЏС†РёРё
                 Real xP, xW, xWW, xP2, xW2, xWW2, xE;
-                // при условии отсутствия узла iE узел iWW всегда существует.
+                // РїСЂРё СѓСЃР»РѕРІРёРё РѕС‚СЃСѓС‚СЃС‚РІРёСЏ СѓР·Р»Р° iE СѓР·РµР» iWW РІСЃРµРіРґР° СЃСѓС‰РµСЃС‚РІСѓРµС‚.
 				int iWW = sosed[WW][iP]-1;
                 xWW=0.25*(x[nvtx[0][iWW]-1]+x[nvtx[1][iWW]-1]+x[nvtx[2][iWW]-1]+x[nvtx[3][iWW]-1]);
 				xW=0.25*(x[nvtx[0][iW]-1]+x[nvtx[1][iW]-1]+x[nvtx[2][iW]-1]+x[nvtx[3][iW]-1]);
@@ -160,7 +160,7 @@ void correct(int iP, equation** &sl, int iVar,
 				B[0][0]=1.0; B[0][1]=xWW; B[0][2]=xWW2;
 				B[1][0]=1.0; B[1][1]=xW; B[1][2]=xW2;
 				B[2][0]=1.0; B[2][1]=xP; B[2][2]=xP2;
-				inverse_matrix_simple(B, 3, false); // обращает матрицу
+				inverse_matrix_simple(B, 3, false); // РѕР±СЂР°С‰Р°РµС‚ РјР°С‚СЂРёС†Сѓ
 				xE=xP+dxe;
 				Real PAmWWloc, PAmWloc, PAmPloc;
 			    PAmWWloc=potent[PAm][iWW]; PAmWloc=potent[PAm][iW]; PAmPloc=potent[PAm][iP];
@@ -169,13 +169,13 @@ void correct(int iP, equation** &sl, int iVar,
 				PAmE+=xE*xE*(B[2][0]*PAmWWloc+B[2][1]*PAmWloc+B[2][2]*PAmPloc);
 		}
 		if ((!bS) && (iS > -1)) PAmS=potent[PAm][iS];
-		else { // квадратичная экстраполяция
-                // узла iS нету.
-				// надо восстановить поправку давления PAmS в узле iS с помощью
-				// квадратичной экстраполяции
+		else { // РєРІР°РґСЂР°С‚РёС‡РЅР°СЏ СЌРєСЃС‚СЂР°РїРѕР»СЏС†РёСЏ
+                // СѓР·Р»Р° iS РЅРµС‚Сѓ.
+				// РЅР°РґРѕ РІРѕСЃСЃС‚Р°РЅРѕРІРёС‚СЊ РїРѕРїСЂР°РІРєСѓ РґР°РІР»РµРЅРёСЏ PAmS РІ СѓР·Р»Рµ iS СЃ РїРѕРјРѕС‰СЊСЋ
+				// РєРІР°РґСЂР°С‚РёС‡РЅРѕР№ СЌРєСЃС‚СЂР°РїРѕР»СЏС†РёРё
                 Real yP, yN, yNN, yP2, yN2, yNN2, yS;
 				int iNN=sosed[NN][iP]-1;
-				// при условии отсутствия узла iS узел iNN всегда существует.
+				// РїСЂРё СѓСЃР»РѕРІРёРё РѕС‚СЃСѓС‚СЃС‚РІРёСЏ СѓР·Р»Р° iS СѓР·РµР» iNN РІСЃРµРіРґР° СЃСѓС‰РµСЃС‚РІСѓРµС‚.
                 yNN=0.25*(y[nvtx[0][iNN]-1]+y[nvtx[1][iNN]-1]+y[nvtx[2][iNN]-1]+y[nvtx[3][iNN]-1]);
 				yN=0.25*(y[nvtx[0][iN]-1]+y[nvtx[1][iN]-1]+y[nvtx[2][iN]-1]+y[nvtx[3][iN]-1]);
 				yP=0.25*(y[nvtx[0][iP]-1]+y[nvtx[1][iP]-1]+y[nvtx[2][iP]-1]+y[nvtx[3][iP]-1]);
@@ -184,7 +184,7 @@ void correct(int iP, equation** &sl, int iVar,
 				B[0][0]=1.0; B[0][1]=yP; B[0][2]=yP2;
 				B[1][0]=1.0; B[1][1]=yN; B[1][2]=yN2;
 				B[2][0]=1.0; B[2][1]=yNN; B[2][2]=yNN2;
-				inverse_matrix_simple(B, 3, false); // обращает матрицу
+				inverse_matrix_simple(B, 3, false); // РѕР±СЂР°С‰Р°РµС‚ РјР°С‚СЂРёС†Сѓ
 				yS=yP-dys;
 				Real  PAmPloc, PAmNloc, PAmNNloc;
 				PAmPloc=potent[PAm][iP]; PAmNloc=potent[PAm][iN]; PAmNNloc=potent[PAm][iNN];
@@ -193,12 +193,12 @@ void correct(int iP, equation** &sl, int iVar,
 				PAmS+=yS*yS*(B[2][0]*PAmPloc+B[2][1]*PAmNloc+B[2][2]*PAmNNloc);
 		}
 		if ((!bN) && (iN > -1)) PAmN=potent[PAm][iN];
-		else { // квадратичная экстраполяция
-                // узла iN нету.
-				// надо восстановить давление PN в узле iN с помощью
-				// квадратичной экстраполяции
+		else { // РєРІР°РґСЂР°С‚РёС‡РЅР°СЏ СЌРєСЃС‚СЂР°РїРѕР»СЏС†РёСЏ
+                // СѓР·Р»Р° iN РЅРµС‚Сѓ.
+				// РЅР°РґРѕ РІРѕСЃСЃС‚Р°РЅРѕРІРёС‚СЊ РґР°РІР»РµРЅРёРµ PN РІ СѓР·Р»Рµ iN СЃ РїРѕРјРѕС‰СЊСЋ
+				// РєРІР°РґСЂР°С‚РёС‡РЅРѕР№ СЌРєСЃС‚СЂР°РїРѕР»СЏС†РёРё
                 Real yP, yS, ySS, yP2, yS2, ySS2, yN;
-                // при условии отсутствия узла iN узел iSS всегда существует.
+                // РїСЂРё СѓСЃР»РѕРІРёРё РѕС‚СЃСѓС‚СЃС‚РІРёСЏ СѓР·Р»Р° iN СѓР·РµР» iSS РІСЃРµРіРґР° СЃСѓС‰РµСЃС‚РІСѓРµС‚.
 				int iSS=sosed[SS][iP]-1;
                 ySS=0.25*(y[nvtx[0][iSS]-1]+y[nvtx[1][iSS]-1]+y[nvtx[2][iSS]-1]+y[nvtx[3][iSS]-1]);
 				yS=0.25*(y[nvtx[0][iS]-1]+y[nvtx[1][iS]-1]+y[nvtx[2][iS]-1]+y[nvtx[3][iS]-1]);
@@ -208,7 +208,7 @@ void correct(int iP, equation** &sl, int iVar,
 				B[0][0]=1.0; B[0][1]=ySS; B[0][2]=ySS2;
 				B[1][0]=1.0; B[1][1]=yS; B[1][2]=yS2;
 				B[2][0]=1.0; B[2][1]=yP; B[2][2]=yP2;
-				inverse_matrix_simple(B, 3, false); // обращает матрицу
+				inverse_matrix_simple(B, 3, false); // РѕР±СЂР°С‰Р°РµС‚ РјР°С‚СЂРёС†Сѓ
 				yN=yP+dyn;
 				Real PAmSSloc, PAmSloc, PAmPloc;
 			    PAmSSloc=potent[PAm][iSS]; PAmSloc=potent[PAm][iS]; PAmPloc=potent[PAm][iP];
@@ -257,14 +257,14 @@ void correct(int iP, equation** &sl, int iVar,
 		// taue*deltaP/(dx*rhoe);
 		//alpha[iVar] * dy * dy*deltaP/(dx*apue);
 
-		// коррекция скорости не должна подвергаться нижней релаксации.
+		// РєРѕСЂСЂРµРєС†РёСЏ СЃРєРѕСЂРѕСЃС‚Рё РЅРµ РґРѕР»Р¶РЅР° РїРѕРґРІРµСЂРіР°С‚СЊСЃСЏ РЅРёР¶РЅРµР№ СЂРµР»Р°РєСЃР°С†РёРё.
 		potent[iVar][iP] += alpha[iVar] * dl * (deltaP2) / sumanb[iVar][iP];// sl[iVar][iP].ap;//alpha[iVar]*
 
 		/*
-		// Портит конфузор !!!
+		// РџРѕСЂС‚РёС‚ РєРѕРЅС„СѓР·РѕСЂ !!!
 		if (iVar == Vx) {
 			if ((!bW) && (!bE) && (iW > -1) && (iE > -1)) {
-				// Скорректируем также и поток жидкости на грани контрольного объёма.
+				// РЎРєРѕСЂСЂРµРєС‚РёСЂСѓРµРј С‚Р°РєР¶Рµ Рё РїРѕС‚РѕРє Р¶РёРґРєРѕСЃС‚Рё РЅР° РіСЂР°РЅРё РєРѕРЅС‚СЂРѕР»СЊРЅРѕРіРѕ РѕР±СЉС‘РјР°.
 				Flux_gran_relx[E][iP] += alpha[iVar] * dl * (deltaP2) / sumanb[iVar][iP];
 				Flux_gran_relx[W][iP] += alpha[iVar] * dl * (deltaP2) / sumanb[iVar][iP];
 				Flux_gran[E][iP] += alpha[iVar] * dl * (deltaP2) / sumanb[iVar][iP];
@@ -273,7 +273,7 @@ void correct(int iP, equation** &sl, int iVar,
 		}
 		if (iVar == Vy) {
 			if ((!bS) && (!bN) && (iS > -1) && (iN > -1)) {
-				// Скорректируем также и поток жидкости на грани контрольного объёма.
+				// РЎРєРѕСЂСЂРµРєС‚РёСЂСѓРµРј С‚Р°РєР¶Рµ Рё РїРѕС‚РѕРє Р¶РёРґРєРѕСЃС‚Рё РЅР° РіСЂР°РЅРё РєРѕРЅС‚СЂРѕР»СЊРЅРѕРіРѕ РѕР±СЉС‘РјР°.
 				Flux_gran_relx[N][iP] += alpha[iVar] * dl * (deltaP2) / sumanb[iVar][iP];
 				Flux_gran_relx[S][iP] += alpha[iVar] * dl * (deltaP2) / sumanb[iVar][iP];
 				Flux_gran[N][iP] += alpha[iVar] * dl * (deltaP2) / sumanb[iVar][iP];
@@ -300,7 +300,7 @@ void correct(int iP, equation** &sl, int iVar,
 			break;
 		}*/
 
-		// коррекция скорости не должна подвергаться нижней релаксации.
+		// РєРѕСЂСЂРµРєС†РёСЏ СЃРєРѕСЂРѕСЃС‚Рё РЅРµ РґРѕР»Р¶РЅР° РїРѕРґРІРµСЂРіР°С‚СЊСЃСЏ РЅРёР¶РЅРµР№ СЂРµР»Р°РєСЃР°С†РёРё.
 		//--->potent[iVar][iP] += alpha[iVar] * dl * dl *  (deltaP) / (dlr * sumanb[iVar][iP]);
 
 		//potent[iVar][iP] += (deltaP) / (dlr);
@@ -317,40 +317,40 @@ void calc_tau(int iP, equation**& sl, int**& nvtx, bool**& boundary,
 {
 	if (!((boundary[PAm][iP]) && (!neiman[PAm][iP]))) {
 
-		Real eps = 1e-37; // для отделения вещественного нуля.
+		Real eps = 1e-37; // РґР»СЏ РѕС‚РґРµР»РµРЅРёСЏ РІРµС‰РµСЃС‚РІРµРЅРЅРѕРіРѕ РЅСѓР»СЏ.
 
-	// iP - номер центрального контрольного объёма
-		int iE, iN, iW, iS; // номера соседних контрольных объёмов
+	// iP - РЅРѕРјРµСЂ С†РµРЅС‚СЂР°Р»СЊРЅРѕРіРѕ РєРѕРЅС‚СЂРѕР»СЊРЅРѕРіРѕ РѕР±СЉС‘РјР°
+		int iE, iN, iW, iS; // РЅРѕРјРµСЂР° СЃРѕСЃРµРґРЅРёС… РєРѕРЅС‚СЂРѕР»СЊРЅС‹С… РѕР±СЉС‘РјРѕРІ
 		iE = qass[iP].iE; iN = qass[iP].iN; iW = qass[iP].iW; iS = qass[iP].iS;
 		sl[PAm][iP].iE = iE; sl[PAm][iP].iN = iN; sl[PAm][iP].iP = iP; sl[PAm][iP].iS = iS; sl[PAm][iP].iW = iW;
 
 
-		// либо внутренний узел, либо условие Неймана.
+		// Р»РёР±Рѕ РІРЅСѓС‚СЂРµРЅРЅРёР№ СѓР·РµР», Р»РёР±Рѕ СѓСЃР»РѕРІРёРµ РќРµР№РјР°РЅР°.
 
-		// условие Неймана 
-		// в случае если переменная равна true
+		// СѓСЃР»РѕРІРёРµ РќРµР№РјР°РЅР° 
+		// РІ СЃР»СѓС‡Р°Рµ РµСЃР»Рё РїРµСЂРµРјРµРЅРЅР°СЏ СЂР°РІРЅР° true
 		bool bE = false, bN = false, bW = false, bS = false;
 		if ((boundary[PAm][iP]) && (neiman[PAm][iP])) {
-			// внешние нормали
+			// РІРЅРµС€РЅРёРµ РЅРѕСЂРјР°Р»Рё
 			switch (norm[0][iP]) {
 			case E: bE = true; break;
 			case N: bN = true; break;
 			case W: bW = true; break;
 			case S: bS = true; break;
-			} // первая нормаль
+			} // РїРµСЂРІР°СЏ РЅРѕСЂРјР°Р»СЊ
 
-			// внешние нормали
+			// РІРЅРµС€РЅРёРµ РЅРѕСЂРјР°Р»Рё
 			switch (norm[1][iP]) {
 			case E: bE = true; break;
 			case N: bN = true; break;
 			case W: bW = true; break;
 			case S: bS = true; break;
-			} // вторая нормаль
+			} // РІС‚РѕСЂР°СЏ РЅРѕСЂРјР°Р»СЊ
 		}
 
 
-		// вычисление размеров текущего контрольного объёма:
-		Real dx = qass[iP].dx, dy = qass[iP].dy; // размеры контрольного объёма
+		// РІС‹С‡РёСЃР»РµРЅРёРµ СЂР°Р·РјРµСЂРѕРІ С‚РµРєСѓС‰РµРіРѕ РєРѕРЅС‚СЂРѕР»СЊРЅРѕРіРѕ РѕР±СЉС‘РјР°:
+		Real dx = qass[iP].dx, dy = qass[iP].dy; // СЂР°Р·РјРµСЂС‹ РєРѕРЅС‚СЂРѕР»СЊРЅРѕРіРѕ РѕР±СЉС‘РјР°
 		//volume(iP, nve, nvtx, x, y, dx, dy);
 
 
@@ -375,7 +375,7 @@ void calc_tau(int iP, equation**& sl, int**& nvtx, bool**& boundary,
 
 		Real apue = 1.0, apuw = 1.0, apvn = 1.0, apvs = 1.0;
 
-		// Подлежит удалению.
+		// РџРѕРґР»РµР¶РёС‚ СѓРґР°Р»РµРЅРёСЋ.
 		//if (!bE) apue = sl[Vx][iE].ap * sl[Vx][iP].ap / ((1 - feplus) * sl[Vx][iP].ap + feplus * sl[Vx][iE].ap); else apue = sl[Vx][iP].ap;
 		//if (!bW) apuw = sl[Vx][iW].ap * sl[Vx][iP].ap / ((1 - fwplus) * sl[Vx][iP].ap + fwplus * sl[Vx][iW].ap); else apuw = sl[Vx][iP].ap;
 		//if (!bN) apvn = sl[Vy][iN].ap * sl[Vy][iP].ap / ((1 - fnplus) * sl[Vy][iP].ap + fnplus * sl[Vy][iN].ap); else apvn = sl[Vy][iP].ap;
@@ -393,7 +393,7 @@ void calc_tau(int iP, equation**& sl, int**& nvtx, bool**& boundary,
 		de = alpha[Vx] * dy / apue; dw = alpha[Vx] * dy / apuw;
 		dn = alpha[Vy] * dx / apvn; ds = alpha[Vy] * dx / apvs;
 
-		// плотность аппроксимируется средним гармоническим
+		// РїР»РѕС‚РЅРѕСЃС‚СЊ Р°РїРїСЂРѕРєСЃРёРјРёСЂСѓРµС‚СЃСЏ СЃСЂРµРґРЅРёРј РіР°СЂРјРѕРЅРёС‡РµСЃРєРёРј
 		Real rhoe, rhow, rhon, rhos;
 		Real rP, rE, rN, rW, rS;
 
@@ -421,48 +421,48 @@ void calc_tau(int iP, equation**& sl, int**& nvtx, bool**& boundary,
 	}
 }
 
-// Составляет матрицу для уравнения 
-// поправки давления
+// РЎРѕСЃС‚Р°РІР»СЏРµС‚ РјР°С‚СЂРёС†Сѓ РґР»СЏ СѓСЂР°РІРЅРµРЅРёСЏ 
+// РїРѕРїСЂР°РІРєРё РґР°РІР»РµРЅРёСЏ
 void my_elmatr_quad_PAm(int iP, equation**& sl, int** &nvtx, bool** &boundary,
 	Real** &potent, Real** &sumanb, Real** &Flux_gran, Real** & Flux_gran_relx, 
 	Real** &tau, Real* &x, Real* &y, Real** &prop,
 	int** &sosed, bool** &neiman, int** &norm, int nve,
 	Real* &alpha, Real** &B) {
 
-	Real eps = 1e-37; // для отделения вещественного нуля.
+	Real eps = 1e-37; // РґР»СЏ РѕС‚РґРµР»РµРЅРёСЏ РІРµС‰РµСЃС‚РІРµРЅРЅРѕРіРѕ РЅСѓР»СЏ.
 
-	// iP - номер центрального контрольного объёма
-	int iE, iN, iW, iS; // номера соседних контрольных объёмов
+	// iP - РЅРѕРјРµСЂ С†РµРЅС‚СЂР°Р»СЊРЅРѕРіРѕ РєРѕРЅС‚СЂРѕР»СЊРЅРѕРіРѕ РѕР±СЉС‘РјР°
+	int iE, iN, iW, iS; // РЅРѕРјРµСЂР° СЃРѕСЃРµРґРЅРёС… РєРѕРЅС‚СЂРѕР»СЊРЅС‹С… РѕР±СЉС‘РјРѕРІ
 	iE = qass[iP].iE; iN = qass[iP].iN; iW = qass[iP].iW; iS = qass[iP].iS;
 	sl[PAm][iP].iE = iE; sl[PAm][iP].iN = iN; sl[PAm][iP].iP = iP; sl[PAm][iP].iS = iS; sl[PAm][iP].iW = iW;
 
 	
-		// либо внутренний узел, либо условие Неймана.
+		// Р»РёР±Рѕ РІРЅСѓС‚СЂРµРЅРЅРёР№ СѓР·РµР», Р»РёР±Рѕ СѓСЃР»РѕРІРёРµ РќРµР№РјР°РЅР°.
 
-		// условие Неймана 
-		// в случае если переменная равна true
+		// СѓСЃР»РѕРІРёРµ РќРµР№РјР°РЅР° 
+		// РІ СЃР»СѓС‡Р°Рµ РµСЃР»Рё РїРµСЂРµРјРµРЅРЅР°СЏ СЂР°РІРЅР° true
 		bool bE = false, bN = false, bW = false, bS = false;
 		if ((boundary[PAm][iP]) && (neiman[PAm][iP])) {
-			// внешние нормали
+			// РІРЅРµС€РЅРёРµ РЅРѕСЂРјР°Р»Рё
 			switch (norm[0][iP]) {
 			case E: bE = true; break;
 			case N: bN = true; break;
 			case W: bW = true; break;
 			case S: bS = true; break;
-			} // первая нормаль
+			} // РїРµСЂРІР°СЏ РЅРѕСЂРјР°Р»СЊ
 
-			// внешние нормали
+			// РІРЅРµС€РЅРёРµ РЅРѕСЂРјР°Р»Рё
 			switch (norm[1][iP]) {
 			case E: bE = true; break;
 			case N: bN = true; break;
 			case W: bW = true; break;
 			case S: bS = true; break;
-			} // вторая нормаль
+			} // РІС‚РѕСЂР°СЏ РЅРѕСЂРјР°Р»СЊ
 		}
 
 
-		// вычисление размеров текущего контрольного объёма:
-		Real dx = qass[iP].dx, dy = qass[iP].dy; // размеры контрольного объёма
+		// РІС‹С‡РёСЃР»РµРЅРёРµ СЂР°Р·РјРµСЂРѕРІ С‚РµРєСѓС‰РµРіРѕ РєРѕРЅС‚СЂРѕР»СЊРЅРѕРіРѕ РѕР±СЉС‘РјР°:
+		Real dx = qass[iP].dx, dy = qass[iP].dy; // СЂР°Р·РјРµСЂС‹ РєРѕРЅС‚СЂРѕР»СЊРЅРѕРіРѕ РѕР±СЉС‘РјР°
 		//volume(iP, nve, nvtx, x, y, dx, dy);
 
 
@@ -487,7 +487,7 @@ void my_elmatr_quad_PAm(int iP, equation**& sl, int** &nvtx, bool** &boundary,
 
 		Real apue = 1.0, apuw = 1.0, apvn = 1.0, apvs = 1.0;
 
-		// Подлежит удалению.
+		// РџРѕРґР»РµР¶РёС‚ СѓРґР°Р»РµРЅРёСЋ.
 		//if (!bE) apue = sl[Vx][iE].ap * sl[Vx][iP].ap / ((1 - feplus) * sl[Vx][iP].ap + feplus * sl[Vx][iE].ap); else apue = sl[Vx][iP].ap;
 		//if (!bW) apuw = sl[Vx][iW].ap * sl[Vx][iP].ap / ((1 - fwplus) * sl[Vx][iP].ap + fwplus * sl[Vx][iW].ap); else apuw = sl[Vx][iP].ap;
 		//if (!bN) apvn = sl[Vy][iN].ap * sl[Vy][iP].ap / ((1 - fnplus) * sl[Vy][iP].ap + fnplus * sl[Vy][iN].ap); else apvn = sl[Vy][iP].ap;
@@ -503,7 +503,7 @@ void my_elmatr_quad_PAm(int iP, equation**& sl, int** &nvtx, bool** &boundary,
 		de = alpha[Vx] * dy / apue; dw = alpha[Vx] * dy / apuw;
 		dn = alpha[Vy] * dx / apvn; ds = alpha[Vy] * dx / apvs;
 
-		// плотность аппроксимируется средним гармоническим
+		// РїР»РѕС‚РЅРѕСЃС‚СЊ Р°РїРїСЂРѕРєСЃРёРјРёСЂСѓРµС‚СЃСЏ СЃСЂРµРґРЅРёРј РіР°СЂРјРѕРЅРёС‡РµСЃРєРёРј
 		Real rhoe, rhow, rhon, rhos;
 		Real rP, rE, rN, rW, rS;
 
@@ -526,7 +526,7 @@ void my_elmatr_quad_PAm(int iP, equation**& sl, int** &nvtx, bool** &boundary,
 		Real Fw_cor = 0.0, Fe_cor = 0.0, Fs_cor = 0.0, Fn_cor = 0.0;
 		Real FwRhie_Chow = 0.0, FeRhie_Chow = 0.0, FsRhie_Chow = 0.0, FnRhie_Chow = 0.0;
 
-		//int l; // счётчик цикла for
+		//int l; // СЃС‡С‘С‚С‡РёРє С†РёРєР»Р° for
 		
 		//Real** B = new Real * [3];
 		//for (int l = 0; l < 3; l++) B[l] = new Real[3];
@@ -540,29 +540,29 @@ void my_elmatr_quad_PAm(int iP, equation**& sl, int** &nvtx, bool** &boundary,
 			Real koef = rhoe * dy * dy * alpha[Vx];
 			int iEE = sosed[EE][iP] - 1;
 			Real dxee = dxe;
-			Real PEE = 0.0; // давление в узле iEE
+			Real PEE = 0.0; // РґР°РІР»РµРЅРёРµ РІ СѓР·Р»Рµ iEE
 			if (iEE > -1) {
-				// если узел существует
+				// РµСЃР»Рё СѓР·РµР» СЃСѓС‰РµСЃС‚РІСѓРµС‚
 				dxee = 0.25 * (x[nvtx[0][iEE] - 1] + x[nvtx[1][iEE] - 1] + x[nvtx[2][iEE] - 1] + x[nvtx[3][iEE] - 1]);
 				dxee -= 0.25 * (x[nvtx[0][iE] - 1] + x[nvtx[1][iE] - 1] + x[nvtx[2][iE] - 1] + x[nvtx[3][iE] - 1]);
 				PEE = potent[Press][iEE];
 			}
 			else {
-				// если узел несуществует 
-				// недостающее Давление PEE
-				// будет определено с помощью 
-				// квадратичной экстраполяции.
+				// РµСЃР»Рё СѓР·РµР» РЅРµСЃСѓС‰РµСЃС‚РІСѓРµС‚ 
+				// РЅРµРґРѕСЃС‚Р°СЋС‰РµРµ Р”Р°РІР»РµРЅРёРµ PEE
+				// Р±СѓРґРµС‚ РѕРїСЂРµРґРµР»РµРЅРѕ СЃ РїРѕРјРѕС‰СЊСЋ 
+				// РєРІР°РґСЂР°С‚РёС‡РЅРѕР№ СЌРєСЃС‚СЂР°РїРѕР»СЏС†РёРё.
 				Real xE, xP, xW, xE2, xP2, xW2, xEE;
 				xE = 0.25 * (x[nvtx[0][iE] - 1] + x[nvtx[1][iE] - 1] + x[nvtx[2][iE] - 1] + x[nvtx[3][iE] - 1]);
 				xP = 0.25 * (x[nvtx[0][iP] - 1] + x[nvtx[1][iP] - 1] + x[nvtx[2][iP] - 1] + x[nvtx[3][iP] - 1]);
-				// при условии отсутствия узла iEE узел iW всегда существует.
+				// РїСЂРё СѓСЃР»РѕРІРёРё РѕС‚СЃСѓС‚СЃС‚РІРёСЏ СѓР·Р»Р° iEE СѓР·РµР» iW РІСЃРµРіРґР° СЃСѓС‰РµСЃС‚РІСѓРµС‚.
 				xW = 0.25 * (x[nvtx[0][iW] - 1] + x[nvtx[1][iW] - 1] + x[nvtx[2][iW] - 1] + x[nvtx[3][iW] - 1]);
 				xE2 = xE * xE; xP2 = xP * xP; xW2 = xW * xW;
 
 				B[0][0] = 1.0; B[0][1] = xW; B[0][2] = xW2;
 				B[1][0] = 1.0; B[1][1] = xP; B[1][2] = xP2;
 				B[2][0] = 1.0; B[2][1] = xE; B[2][2] = xE2;
-				inverse_matrix_simple(B, 3, false); // обращает матрицу
+				inverse_matrix_simple(B, 3, false); // РѕР±СЂР°С‰Р°РµС‚ РјР°С‚СЂРёС†Сѓ
 				xEE = xE + dxe;
 				Real PE, PP, PW;
 				PE = potent[Press][iE]; PP = potent[Press][iP]; PW = potent[Press][iW];
@@ -586,12 +586,12 @@ void my_elmatr_quad_PAm(int iP, equation**& sl, int** &nvtx, bool** &boundary,
 				FeRhie_Chow -= koef * (potent[Press][iE] - potent[Press][iP]) / apue;
 			}
 			else {
-				// узла iW нету.
-				// надо восстановить давление PW в узле iW с помощью
-				// квадратичной экстраполяции
+				// СѓР·Р»Р° iW РЅРµС‚Сѓ.
+				// РЅР°РґРѕ РІРѕСЃСЃС‚Р°РЅРѕРІРёС‚СЊ РґР°РІР»РµРЅРёРµ PW РІ СѓР·Р»Рµ iW СЃ РїРѕРјРѕС‰СЊСЋ
+				// РєРІР°РґСЂР°С‚РёС‡РЅРѕР№ СЌРєСЃС‚СЂР°РїРѕР»СЏС†РёРё
 				Real xP, xE, xEE, xP2, xE2, xEE2, xW;
 				xEE = 0.25 * (x[nvtx[0][iEE] - 1] + x[nvtx[1][iEE] - 1] + x[nvtx[2][iEE] - 1] + x[nvtx[3][iEE] - 1]);
-				// при условии отсутствия узла iWW узел iE всегда существует.
+				// РїСЂРё СѓСЃР»РѕРІРёРё РѕС‚СЃСѓС‚СЃС‚РІРёСЏ СѓР·Р»Р° iWW СѓР·РµР» iE РІСЃРµРіРґР° СЃСѓС‰РµСЃС‚РІСѓРµС‚.
 				xE = 0.25 * (x[nvtx[0][iE] - 1] + x[nvtx[1][iE] - 1] + x[nvtx[2][iE] - 1] + x[nvtx[3][iE] - 1]);
 				xP = 0.25 * (x[nvtx[0][iP] - 1] + x[nvtx[1][iP] - 1] + x[nvtx[2][iP] - 1] + x[nvtx[3][iP] - 1]);
 				xP2 = xP * xP; xE2 = xE * xE;  xEE2 = xEE * xEE;
@@ -599,7 +599,7 @@ void my_elmatr_quad_PAm(int iP, equation**& sl, int** &nvtx, bool** &boundary,
 				B[0][0] = 1.0; B[0][1] = xP; B[0][2] = xP2;
 				B[1][0] = 1.0; B[1][1] = xE; B[1][2] = xE2;
 				B[2][0] = 1.0; B[2][1] = xEE; B[2][2] = xEE2;
-				inverse_matrix_simple(B, 3, false); // обращает матрицу
+				inverse_matrix_simple(B, 3, false); // РѕР±СЂР°С‰Р°РµС‚ РјР°С‚СЂРёС†Сѓ
 				xW = xP - dxw;
 				Real PE, PP, PW;
 				PE = potent[Press][iE]; PP = potent[Press][iP];
@@ -608,7 +608,7 @@ void my_elmatr_quad_PAm(int iP, equation**& sl, int** &nvtx, bool** &boundary,
 				PW += xW * xW * (B[2][0] * PP + B[2][1] * PE + B[2][2] * PEE);
 
 
-				// неравномерная сетка
+				// РЅРµСЂР°РІРЅРѕРјРµСЂРЅР°СЏ СЃРµС‚РєР°
 				// E
 				FeRhie_Chow += koef * (feplus) * (feeplus * PEE + (1.0 - feeplus) * potent[Press][iE] 
 					- fpplus * potent[Press][iE] - (1.0 - fpplus) * potent[Press][iP]) / (sumanb[Vx][iE]);
@@ -626,23 +626,23 @@ void my_elmatr_quad_PAm(int iP, equation**& sl, int** &nvtx, bool** &boundary,
 			Fe = rhoe * dy * potent[Vx][iP];
 			Fe_cor = rhoe * dy * potent[Vxcor][iP];
 
-			// Если жидкость не течёт через стенку
-			// то и нормального к стенке перепада давления там нет.
-			// Вблизи твёрдой стенки предположим что
-			// давление гладкая функция.
-			// В дальнейшем это требуется проверить экспериментально. TODO
+			// Р•СЃР»Рё Р¶РёРґРєРѕСЃС‚СЊ РЅРµ С‚РµС‡С‘С‚ С‡РµСЂРµР· СЃС‚РµРЅРєСѓ
+			// С‚Рѕ Рё РЅРѕСЂРјР°Р»СЊРЅРѕРіРѕ Рє СЃС‚РµРЅРєРµ РїРµСЂРµРїР°РґР° РґР°РІР»РµРЅРёСЏ С‚Р°Рј РЅРµС‚.
+			// Р’Р±Р»РёР·Рё С‚РІС‘СЂРґРѕР№ СЃС‚РµРЅРєРё РїСЂРµРґРїРѕР»РѕР¶РёРј С‡С‚Рѕ
+			// РґР°РІР»РµРЅРёРµ РіР»Р°РґРєР°СЏ С„СѓРЅРєС†РёСЏ.
+			// Р’ РґР°Р»СЊРЅРµР№С€РµРј СЌС‚Рѕ С‚СЂРµР±СѓРµС‚СЃСЏ РїСЂРѕРІРµСЂРёС‚СЊ СЌРєСЃРїРµСЂРёРјРµРЅС‚Р°Р»СЊРЅРѕ. TODO
 			//if (fabs(Fe) < eps) FeRhie_Chow = 0.0;
 			//else
 			{
 
-				// узлов iE и iEE нету
-				// давление в них определяется
-				// с помощью квадратичной экстраполяции
-				Real PEE = 0.0; // давление в узле iEE
-				Real PE = 0.0; // давление в узле iE
+				// СѓР·Р»РѕРІ iE Рё iEE РЅРµС‚Сѓ
+				// РґР°РІР»РµРЅРёРµ РІ РЅРёС… РѕРїСЂРµРґРµР»СЏРµС‚СЃСЏ
+				// СЃ РїРѕРјРѕС‰СЊСЋ РєРІР°РґСЂР°С‚РёС‡РЅРѕР№ СЌРєСЃС‚СЂР°РїРѕР»СЏС†РёРё
+				Real PEE = 0.0; // РґР°РІР»РµРЅРёРµ РІ СѓР·Р»Рµ iEE
+				Real PE = 0.0; // РґР°РІР»РµРЅРёРµ РІ СѓР·Р»Рµ iE
 				int iWW = sosed[WW][iP] - 1;
 				Real xWW, xW, xP, xWW2, xW2, xP2, xE, xEE;
-				// при условии отсутствия узла iE и iEE узел iWW всегда существует.
+				// РїСЂРё СѓСЃР»РѕРІРёРё РѕС‚СЃСѓС‚СЃС‚РІРёСЏ СѓР·Р»Р° iE Рё iEE СѓР·РµР» iWW РІСЃРµРіРґР° СЃСѓС‰РµСЃС‚РІСѓРµС‚.
 				xWW = 0.25 * (x[nvtx[0][iWW] - 1] + x[nvtx[1][iWW] - 1] + x[nvtx[2][iWW] - 1] + x[nvtx[3][iWW] - 1]);
 				xW = 0.25 * (x[nvtx[0][iW] - 1] + x[nvtx[1][iW] - 1] + x[nvtx[2][iW] - 1] + x[nvtx[3][iW] - 1]);
 				xP = 0.25 * (x[nvtx[0][iP] - 1] + x[nvtx[1][iP] - 1] + x[nvtx[2][iP] - 1] + x[nvtx[3][iP] - 1]);
@@ -651,7 +651,7 @@ void my_elmatr_quad_PAm(int iP, equation**& sl, int** &nvtx, bool** &boundary,
 				B[0][0] = 1.0; B[0][1] = xWW; B[0][2] = xWW2;
 				B[1][0] = 1.0; B[1][1] = xW; B[1][2] = xW2;
 				B[2][0] = 1.0; B[2][1] = xP; B[2][2] = xP2;
-				inverse_matrix_simple(B, 3, false); // обращает матрицу
+				inverse_matrix_simple(B, 3, false); // РѕР±СЂР°С‰Р°РµС‚ РјР°С‚СЂРёС†Сѓ
 				Real dxee = dxe;
 				xE = xP + dxe;
 				xEE = xE + dxe;
@@ -669,7 +669,7 @@ void my_elmatr_quad_PAm(int iP, equation**& sl, int** &nvtx, bool** &boundary,
 
 				Real feeplus = 0.5, fpplus = 0.5;
 
-				// неравномерная сетка
+				// РЅРµСЂР°РІРЅРѕРјРµСЂРЅР°СЏ СЃРµС‚РєР°
 				FeRhie_Chow += koef * (feplus) * ((1.0 - feeplus) * PEE +  feeplus *PE 
 				- fpplus * PE - (1.0 - fpplus) * potent[Press][iP]) / (sumanb[Vx][iP]);
 				FeRhie_Chow += koef * (1.0 - feplus) * (feplus * PE + (1.0 - feplus) * potent[Press][iP] 
@@ -677,14 +677,14 @@ void my_elmatr_quad_PAm(int iP, equation**& sl, int** &nvtx, bool** &boundary,
 				FeRhie_Chow -= koef * (PE - potent[Press][iP]) / apue;
 			}
 
-			// Поток задан пользователем, какой смысл его коректировать.
+			// РџРѕС‚РѕРє Р·Р°РґР°РЅ РїРѕР»СЊР·РѕРІР°С‚РµР»РµРј, РєР°РєРѕР№ СЃРјС‹СЃР» РµРіРѕ РєРѕСЂРµРєС‚РёСЂРѕРІР°С‚СЊ.
 			FeRhie_Chow *= mnull2;;
 		}
 
 		if ((!bW) && (iW > -1)) {
 			Fw = rhow * dy * ((1.0 - fwplus) * potent[Vx][iP] + fwplus * potent[Vx][iW]);
 			Fw_cor = rhow * dy * ((1.0 - fwplus) * potent[Vxcor][iP] + fwplus * potent[Vxcor][iW]);
-			// Схема по потоку
+			// РЎС…РµРјР° РїРѕ РїРѕС‚РѕРєСѓ
 			//if (Fw > 0.0) Fw = rhow * dy * potent[Vx][iP]; else Fw = rhow * dy * potent[Vx][iW];
 
 			Real koef = rhow * dy * dy * alpha[Vx];
@@ -692,19 +692,19 @@ void my_elmatr_quad_PAm(int iP, equation**& sl, int** &nvtx, bool** &boundary,
 			Real dxww = dxw;
 			Real PWW = 0.0;
 			if (iWW > -1) {
-				// если узел существует
+				// РµСЃР»Рё СѓР·РµР» СЃСѓС‰РµСЃС‚РІСѓРµС‚
 				dxww = 0.25 * (x[nvtx[0][iW] - 1] + x[nvtx[1][iW] - 1] + x[nvtx[2][iW] - 1] + x[nvtx[3][iW] - 1]);
 				dxww -= 0.25 * (x[nvtx[0][iWW] - 1] + x[nvtx[1][iWW] - 1] + x[nvtx[2][iWW] - 1] + x[nvtx[3][iWW] - 1]);
 				PWW = potent[Press][iWW];
 			}
 			else {
-				// если узел iWW не существует,
-				// то недостающее давление PWW
-				// будет определено с помощью 
-				// квадратичной интерполляции
+				// РµСЃР»Рё СѓР·РµР» iWW РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚,
+				// С‚Рѕ РЅРµРґРѕСЃС‚Р°СЋС‰РµРµ РґР°РІР»РµРЅРёРµ PWW
+				// Р±СѓРґРµС‚ РѕРїСЂРµРґРµР»РµРЅРѕ СЃ РїРѕРјРѕС‰СЊСЋ 
+				// РєРІР°РґСЂР°С‚РёС‡РЅРѕР№ РёРЅС‚РµСЂРїРѕР»Р»СЏС†РёРё
 				Real xW, xP, xE, xW2, xP2, xE2, xWW;
 				xW = 0.25 * (x[nvtx[0][iW] - 1] + x[nvtx[1][iW] - 1] + x[nvtx[2][iW] - 1] + x[nvtx[3][iW] - 1]);
-				// при условии отсутствия узла iWW узел iE всегда существует.
+				// РїСЂРё СѓСЃР»РѕРІРёРё РѕС‚СЃСѓС‚СЃС‚РІРёСЏ СѓР·Р»Р° iWW СѓР·РµР» iE РІСЃРµРіРґР° СЃСѓС‰РµСЃС‚РІСѓРµС‚.
 				xE = 0.25 * (x[nvtx[0][iE] - 1] + x[nvtx[1][iE] - 1] + x[nvtx[2][iE] - 1] + x[nvtx[3][iE] - 1]);
 				xP = 0.25 * (x[nvtx[0][iP] - 1] + x[nvtx[1][iP] - 1] + x[nvtx[2][iP] - 1] + x[nvtx[3][iP] - 1]);
 				xE2 = xE * xE; xP2 = xP * xP; xW2 = xW * xW;
@@ -712,7 +712,7 @@ void my_elmatr_quad_PAm(int iP, equation**& sl, int** &nvtx, bool** &boundary,
 				B[0][0] = 1.0; B[0][1] = xW; B[0][2] = xW2;
 				B[1][0] = 1.0; B[1][1] = xP; B[1][2] = xP2;
 				B[2][0] = 1.0; B[2][1] = xE; B[2][2] = xE2;
-				inverse_matrix_simple(B, 3, false); // обращает матрицу
+				inverse_matrix_simple(B, 3, false); // РѕР±СЂР°С‰Р°РµС‚ РјР°С‚СЂРёС†Сѓ
 				xWW = xW - dxw;
 				Real PE, PP, PW;
 				PE = potent[Press][iE]; PP = potent[Press][iP]; PW = potent[Press][iW];
@@ -736,11 +736,11 @@ void my_elmatr_quad_PAm(int iP, equation**& sl, int** &nvtx, bool** &boundary,
 				FwRhie_Chow -= koef * (potent[Press][iP] - potent[Press][iW]) / apuw;
 			}
 			else {
-				// узла iE нету.
-				// надо восстановить давление PE в узле iE с помощью
-				// квадратичной экстраполяции
+				// СѓР·Р»Р° iE РЅРµС‚Сѓ.
+				// РЅР°РґРѕ РІРѕСЃСЃС‚Р°РЅРѕРІРёС‚СЊ РґР°РІР»РµРЅРёРµ PE РІ СѓР·Р»Рµ iE СЃ РїРѕРјРѕС‰СЊСЋ
+				// РєРІР°РґСЂР°С‚РёС‡РЅРѕР№ СЌРєСЃС‚СЂР°РїРѕР»СЏС†РёРё
 				Real xP, xW, xWW, xP2, xW2, xWW2, xE;
-				// при условии отсутствия узла iE узел iWW всегда существует.
+				// РїСЂРё СѓСЃР»РѕРІРёРё РѕС‚СЃСѓС‚СЃС‚РІРёСЏ СѓР·Р»Р° iE СѓР·РµР» iWW РІСЃРµРіРґР° СЃСѓС‰РµСЃС‚РІСѓРµС‚.
 				xWW = 0.25 * (x[nvtx[0][iWW] - 1] + x[nvtx[1][iWW] - 1] + x[nvtx[2][iWW] - 1] + x[nvtx[3][iWW] - 1]);
 				xW = 0.25 * (x[nvtx[0][iW] - 1] + x[nvtx[1][iW] - 1] + x[nvtx[2][iW] - 1] + x[nvtx[3][iW] - 1]);
 				xP = 0.25 * (x[nvtx[0][iP] - 1] + x[nvtx[1][iP] - 1] + x[nvtx[2][iP] - 1] + x[nvtx[3][iP] - 1]);
@@ -749,7 +749,7 @@ void my_elmatr_quad_PAm(int iP, equation**& sl, int** &nvtx, bool** &boundary,
 				B[0][0] = 1.0; B[0][1] = xWW; B[0][2] = xWW2;
 				B[1][0] = 1.0; B[1][1] = xW; B[1][2] = xW2;
 				B[2][0] = 1.0; B[2][1] = xP; B[2][2] = xP2;
-				inverse_matrix_simple(B, 3, false); // обращает матрицу
+				inverse_matrix_simple(B, 3, false); // РѕР±СЂР°С‰Р°РµС‚ РјР°С‚СЂРёС†Сѓ
 				xE = xP + dxe;
 				Real PE, PW, PP;
 				PW = potent[Press][iW]; PP = potent[Press][iP];
@@ -775,14 +775,14 @@ void my_elmatr_quad_PAm(int iP, equation**& sl, int** &nvtx, bool** &boundary,
 			//if (fabs(Fw) < eps) FwRhie_Chow = 0.0;
 			//else
 			{
-				// узлов iW и iWW нету
-				// давление в них определяется 
-				// с помощью квадратичной экстраполяции
-				Real PWW = 0.0; // давление в узле iWW
-				Real PW = 0.0; // давление в узле iW
+				// СѓР·Р»РѕРІ iW Рё iWW РЅРµС‚Сѓ
+				// РґР°РІР»РµРЅРёРµ РІ РЅРёС… РѕРїСЂРµРґРµР»СЏРµС‚СЃСЏ 
+				// СЃ РїРѕРјРѕС‰СЊСЋ РєРІР°РґСЂР°С‚РёС‡РЅРѕР№ СЌРєСЃС‚СЂР°РїРѕР»СЏС†РёРё
+				Real PWW = 0.0; // РґР°РІР»РµРЅРёРµ РІ СѓР·Р»Рµ iWW
+				Real PW = 0.0; // РґР°РІР»РµРЅРёРµ РІ СѓР·Р»Рµ iW
 				int iEE = sosed[EE][iP] - 1;
 				Real xP, xE, xEE, xP2, xE2, xEE2, xW, xWW;
-				// при условии отсутствия узлов iW и iWW узел iEE всегда существует
+				// РїСЂРё СѓСЃР»РѕРІРёРё РѕС‚СЃСѓС‚СЃС‚РІРёСЏ СѓР·Р»РѕРІ iW Рё iWW СѓР·РµР» iEE РІСЃРµРіРґР° СЃСѓС‰РµСЃС‚РІСѓРµС‚
 				xEE = 0.25 * (x[nvtx[0][iEE] - 1] + x[nvtx[1][iEE] - 1] + x[nvtx[2][iEE] - 1] + x[nvtx[3][iEE] - 1]);
 				xE = 0.25 * (x[nvtx[0][iE] - 1] + x[nvtx[1][iE] - 1] + x[nvtx[2][iE] - 1] + x[nvtx[3][iE] - 1]);
 				xP = 0.25 * (x[nvtx[0][iP] - 1] + x[nvtx[1][iP] - 1] + x[nvtx[2][iP] - 1] + x[nvtx[3][iP] - 1]);
@@ -791,7 +791,7 @@ void my_elmatr_quad_PAm(int iP, equation**& sl, int** &nvtx, bool** &boundary,
 				B[0][0] = 1.0; B[0][1] = xP; B[0][2] = xP2;
 				B[1][0] = 1.0; B[1][1] = xE; B[1][2] = xE2;
 				B[2][0] = 1.0; B[2][1] = xEE; B[2][2] = xEE2;
-				inverse_matrix_simple(B, 3, false); // обращает матрицу
+				inverse_matrix_simple(B, 3, false); // РѕР±СЂР°С‰Р°РµС‚ РјР°С‚СЂРёС†Сѓ
 				Real dxww = dxw;
 				xW = xP - dxw;
 				xWW = xW - dxw;
@@ -816,42 +816,42 @@ void my_elmatr_quad_PAm(int iP, equation**& sl, int** &nvtx, bool** &boundary,
 				FwRhie_Chow -= koef * (potent[Press][iP] - PW) / apuw;
 			}
 		
-			// Поток задан пользователем, какой смысл его коректировать.
+			// РџРѕС‚РѕРє Р·Р°РґР°РЅ РїРѕР»СЊР·РѕРІР°С‚РµР»РµРј, РєР°РєРѕР№ СЃРјС‹СЃР» РµРіРѕ РєРѕСЂРµРєС‚РёСЂРѕРІР°С‚СЊ.
 			FwRhie_Chow  *= mnull2;
          }
 
 		if ((!bN) && (iN > -1)) {
 			Fn = rhon * dx * (fnplus * potent[Vy][iN] + (1.0 - fnplus) * potent[Vy][iP]);
 			Fn_cor = rhon * dx * (fnplus * potent[Vycor][iN] + (1.0 - fnplus) * potent[Vycor][iP]);
-			// Схема по потоку
+			// РЎС…РµРјР° РїРѕ РїРѕС‚РѕРєСѓ
 			//if (Fn > 0.0) Fn = rhon * dx * potent[Vy][iN]; else Fn = rhon * dx * potent[Vy][iP];
 
 			Real koef = rhon * dx * dx * alpha[Vy];
 			int iNN = sosed[NN][iP] - 1;
 			Real dynn = dyn;
-			Real PNN = 0.0; // давление в узле iNN
+			Real PNN = 0.0; // РґР°РІР»РµРЅРёРµ РІ СѓР·Р»Рµ iNN
 			if (iNN > -1) {
-				// если узел существует
+				// РµСЃР»Рё СѓР·РµР» СЃСѓС‰РµСЃС‚РІСѓРµС‚
 				dynn = 0.25 * (y[nvtx[0][iNN] - 1] + y[nvtx[1][iNN] - 1] + y[nvtx[2][iNN] - 1] + y[nvtx[3][iNN] - 1]);
 				dynn -= 0.25 * (y[nvtx[0][iN] - 1] + y[nvtx[1][iN] - 1] + y[nvtx[2][iN] - 1] + y[nvtx[3][iN] - 1]);
 				PNN = potent[Press][iNN];
 			}
 			else {
-				// если узел несуществует 
-				// недостающее Давление PNN
-				// будет определено с помощью 
-				// квадратичной экстраполяции.
+				// РµСЃР»Рё СѓР·РµР» РЅРµСЃСѓС‰РµСЃС‚РІСѓРµС‚ 
+				// РЅРµРґРѕСЃС‚Р°СЋС‰РµРµ Р”Р°РІР»РµРЅРёРµ PNN
+				// Р±СѓРґРµС‚ РѕРїСЂРµРґРµР»РµРЅРѕ СЃ РїРѕРјРѕС‰СЊСЋ 
+				// РєРІР°РґСЂР°С‚РёС‡РЅРѕР№ СЌРєСЃС‚СЂР°РїРѕР»СЏС†РёРё.
 				Real yN, yP, yS, yN2, yP2, yS2, yNN;
 				yN = 0.25 * (y[nvtx[0][iN] - 1] + y[nvtx[1][iN] - 1] + y[nvtx[2][iN] - 1] + y[nvtx[3][iN] - 1]);
 				yP = 0.25 * (y[nvtx[0][iP] - 1] + y[nvtx[1][iP] - 1] + y[nvtx[2][iP] - 1] + y[nvtx[3][iP] - 1]);
-				// при условии отсутствия узла iNN узел iS всегда существует.
+				// РїСЂРё СѓСЃР»РѕРІРёРё РѕС‚СЃСѓС‚СЃС‚РІРёСЏ СѓР·Р»Р° iNN СѓР·РµР» iS РІСЃРµРіРґР° СЃСѓС‰РµСЃС‚РІСѓРµС‚.
 				yS = 0.25 * (y[nvtx[0][iS] - 1] + y[nvtx[1][iS] - 1] + y[nvtx[2][iS] - 1] + y[nvtx[3][iS] - 1]);
 				yN2 = yN * yN; yP2 = yP * yP; yS2 = yS * yS;
 
 				B[0][0] = 1.0; B[0][1] = yS; B[0][2] = yS2;
 				B[1][0] = 1.0; B[1][1] = yP; B[1][2] = yP2;
 				B[2][0] = 1.0; B[2][1] = yN; B[2][2] = yN2;
-				inverse_matrix_simple(B, 3, false); // обращает матрицу
+				inverse_matrix_simple(B, 3, false); // РѕР±СЂР°С‰Р°РµС‚ РјР°С‚СЂРёС†Сѓ
 				yNN = yN + dyn;
 				Real PN, PP, PS;
 				PN = potent[Press][iN]; PP = potent[Press][iP]; PS = potent[Press][iS];
@@ -865,7 +865,7 @@ void my_elmatr_quad_PAm(int iP, equation**& sl, int** &nvtx, bool** &boundary,
 			Real fnnplus = 0.5 * dyN / dynn, fpplus = 0.5 * dyN / dyn;
 
 			if ((!bS) && (iS > -1)) {
-				// неравномерная сетка
+				// РЅРµСЂР°РІРЅРѕРјРµСЂРЅР°СЏ СЃРµС‚РєР°
 				FnRhie_Chow += koef * (fnplus) * (fnnplus * PNN + (1.0 - fnnplus) * potent[Press][iN] 
 					- (1.0 - fpplus) * potent[Press][iN] - fpplus * potent[Press][iP]) / (sumanb[Vy][iN]);
 				FnRhie_Chow += koef * (1.0 - fnplus) * (fnplus * potent[Press][iN] + (1.0 - fnplus) * potent[Press][iP]
@@ -873,11 +873,11 @@ void my_elmatr_quad_PAm(int iP, equation**& sl, int** &nvtx, bool** &boundary,
 				FnRhie_Chow -= koef * (potent[Press][iN] - potent[Press][iP]) / apvn;
 			}
 			else {
-				// узла iS нету.
-				// надо восстановить давление PS в узле iS с помощью
-				// квадратичной экстраполяции
+				// СѓР·Р»Р° iS РЅРµС‚Сѓ.
+				// РЅР°РґРѕ РІРѕСЃСЃС‚Р°РЅРѕРІРёС‚СЊ РґР°РІР»РµРЅРёРµ PS РІ СѓР·Р»Рµ iS СЃ РїРѕРјРѕС‰СЊСЋ
+				// РєРІР°РґСЂР°С‚РёС‡РЅРѕР№ СЌРєСЃС‚СЂР°РїРѕР»СЏС†РёРё
 				Real yP, yN, yNN, yP2, yN2, yNN2, yS;
-				// при условии отсутствия узла iS узел iNN всегда существует.
+				// РїСЂРё СѓСЃР»РѕРІРёРё РѕС‚СЃСѓС‚СЃС‚РІРёСЏ СѓР·Р»Р° iS СѓР·РµР» iNN РІСЃРµРіРґР° СЃСѓС‰РµСЃС‚РІСѓРµС‚.
 				yNN = 0.25 * (y[nvtx[0][iNN] - 1] + y[nvtx[1][iNN] - 1] + y[nvtx[2][iNN] - 1] + y[nvtx[3][iNN] - 1]);
 				yN = 0.25 * (y[nvtx[0][iN] - 1] + y[nvtx[1][iN] - 1] + y[nvtx[2][iN] - 1] + y[nvtx[3][iN] - 1]);
 				yP = 0.25 * (y[nvtx[0][iP] - 1] + y[nvtx[1][iP] - 1] + y[nvtx[2][iP] - 1] + y[nvtx[3][iP] - 1]);
@@ -886,7 +886,7 @@ void my_elmatr_quad_PAm(int iP, equation**& sl, int** &nvtx, bool** &boundary,
 				B[0][0] = 1.0; B[0][1] = yP; B[0][2] = yP2;
 				B[1][0] = 1.0; B[1][1] = yN; B[1][2] = yN2;
 				B[2][0] = 1.0; B[2][1] = yNN; B[2][2] = yNN2;
-				inverse_matrix_simple(B, 3, false); // обращает матрицу
+				inverse_matrix_simple(B, 3, false); // РѕР±СЂР°С‰Р°РµС‚ РјР°С‚СЂРёС†Сѓ
 				yS = yP - dys;
 				Real PS, PP, PN;
 				PN = potent[Press][iN]; PP = potent[Press][iP];
@@ -894,7 +894,7 @@ void my_elmatr_quad_PAm(int iP, equation**& sl, int** &nvtx, bool** &boundary,
 				PS += yS * (B[1][0] * PP + B[1][1] * PN + B[1][2] * PNN);
 				PS += yS * yS * (B[2][0] * PP + B[2][1] * PN + B[2][2] * PNN);
 
-				// неравномерная сетка
+				// РЅРµСЂР°РІРЅРѕРјРµСЂРЅР°СЏ СЃРµС‚РєР°
 				FnRhie_Chow += koef * (fnplus) * (fnnplus * PNN + (1.0 - fnnplus) * potent[Press][iN] 
 					- (1.0 - fpplus) * potent[Press][iN] - fpplus * potent[Press][iP]) / (sumanb[Vy][iN]);
 				FnRhie_Chow += koef * (1.0 - fnplus) * (fnplus * potent[Press][iN] + (1.0 - fnplus) * potent[Press][iP]
@@ -913,14 +913,14 @@ void my_elmatr_quad_PAm(int iP, equation**& sl, int** &nvtx, bool** &boundary,
 			//else
 			{
 
-				// узлов iN и iNN нету
-				// давление в них определяется
-				// с помощью квадратичной экстраполяции
-				Real PNN = 0.0; // давление в узле iNN
-				Real PN = 0.0; // давление в узле iN
+				// СѓР·Р»РѕРІ iN Рё iNN РЅРµС‚Сѓ
+				// РґР°РІР»РµРЅРёРµ РІ РЅРёС… РѕРїСЂРµРґРµР»СЏРµС‚СЃСЏ
+				// СЃ РїРѕРјРѕС‰СЊСЋ РєРІР°РґСЂР°С‚РёС‡РЅРѕР№ СЌРєСЃС‚СЂР°РїРѕР»СЏС†РёРё
+				Real PNN = 0.0; // РґР°РІР»РµРЅРёРµ РІ СѓР·Р»Рµ iNN
+				Real PN = 0.0; // РґР°РІР»РµРЅРёРµ РІ СѓР·Р»Рµ iN
 				int iSS = sosed[SS][iP] - 1;
 				Real ySS, yS, yP, ySS2, yS2, yP2, yN, yNN;
-				// при условии отсутствия узла iN и iNN узел iSS всегда существует.
+				// РїСЂРё СѓСЃР»РѕРІРёРё РѕС‚СЃСѓС‚СЃС‚РІРёСЏ СѓР·Р»Р° iN Рё iNN СѓР·РµР» iSS РІСЃРµРіРґР° СЃСѓС‰РµСЃС‚РІСѓРµС‚.
 				ySS = 0.25 * (y[nvtx[0][iSS] - 1] + y[nvtx[1][iSS] - 1] + y[nvtx[2][iSS] - 1] + y[nvtx[3][iSS] - 1]);
 				yS = 0.25 * (y[nvtx[0][iS] - 1] + y[nvtx[1][iS] - 1] + y[nvtx[2][iS] - 1] + y[nvtx[3][iS] - 1]);
 				yP = 0.25 * (y[nvtx[0][iP] - 1] + y[nvtx[1][iP] - 1] + y[nvtx[2][iP] - 1] + y[nvtx[3][iP] - 1]);
@@ -929,7 +929,7 @@ void my_elmatr_quad_PAm(int iP, equation**& sl, int** &nvtx, bool** &boundary,
 				B[0][0] = 1.0; B[0][1] = ySS; B[0][2] = ySS2;
 				B[1][0] = 1.0; B[1][1] = yS; B[1][2] = yS2;
 				B[2][0] = 1.0; B[2][1] = yP; B[2][2] = yP2;
-				inverse_matrix_simple(B, 3, false); // обращает матрицу
+				inverse_matrix_simple(B, 3, false); // РѕР±СЂР°С‰Р°РµС‚ РјР°С‚СЂРёС†Сѓ
 				Real dynn = dyn;
 				yN = yP + dyn;
 				yNN = yN + dyn;
@@ -947,7 +947,7 @@ void my_elmatr_quad_PAm(int iP, equation**& sl, int** &nvtx, bool** &boundary,
 
 				Real fnnplus = 0.5, fpplus = 0.5;
 
-				// неравномерная сетка
+				// РЅРµСЂР°РІРЅРѕРјРµСЂРЅР°СЏ СЃРµС‚РєР°
 				FnRhie_Chow += koef * (fnplus) * (fnnplus * PNN + (1.0 - fnnplus) * PN 
 				- (1.0 - fpplus) * PN -  fpplus* potent[Press][iP]) / (sumanb[Vy][iP]);
 				FnRhie_Chow += koef * (1.0 - fnplus) * (fnplus * PN + (1.0 - fnplus) * potent[Press][iP] 
@@ -955,32 +955,32 @@ void my_elmatr_quad_PAm(int iP, equation**& sl, int** &nvtx, bool** &boundary,
 				FnRhie_Chow -= koef * (PN - potent[Press][iP]) / sumanb[Vy][iP];
 			}
 		
-			// Поток задан пользователем, какой смысл его коректировать.
+			// РџРѕС‚РѕРє Р·Р°РґР°РЅ РїРѕР»СЊР·РѕРІР°С‚РµР»РµРј, РєР°РєРѕР№ СЃРјС‹СЃР» РµРіРѕ РєРѕСЂРµРєС‚РёСЂРѕРІР°С‚СЊ.
 			FnRhie_Chow  *= mnull2;
         }
 
 		if ((!bS) && (iS > -1)) {
 			Fs = rhos * dx * ((1.0 - fsplus) * potent[Vy][iP] + fsplus * potent[Vy][iS]);
 			Fs_cor = rhos * dx * ((1.0 - fsplus) * potent[Vycor][iP] + fsplus * potent[Vycor][iS]);
-			// Схема по потоку
+			// РЎС…РµРјР° РїРѕ РїРѕС‚РѕРєСѓ
 			//if (Fs > 0.0) Fs = rhos * dx * potent[Vy][iP]; else Fs = rhos * dx * potent[Vy][iS];
 
 			Real koef = rhos * dx * dx * alpha[Vy];
 			int iSS = sosed[SS][iP] - 1;
 			Real dyss = dys;
-			Real PSS = 0.0; // давление в узле iSS
+			Real PSS = 0.0; // РґР°РІР»РµРЅРёРµ РІ СѓР·Р»Рµ iSS
 			if (iSS > -1) {
 				dyss = 0.25 * (y[nvtx[0][iS] - 1] + y[nvtx[1][iS] - 1] + y[nvtx[2][iS] - 1] + y[nvtx[3][iS] - 1]);
 				dyss -= 0.25 * (y[nvtx[0][iSS] - 1] + y[nvtx[1][iSS] - 1] + y[nvtx[2][iSS] - 1] + y[nvtx[3][iSS] - 1]);
 				PSS = potent[Press][iSS];
 			}
 			else {
-				// если узел несуществует 
-				 // недостающее Давление PSS
-				 // будет определено с помощью 
-				 // квадратичной экстраполяции.
+				// РµСЃР»Рё СѓР·РµР» РЅРµСЃСѓС‰РµСЃС‚РІСѓРµС‚ 
+				 // РЅРµРґРѕСЃС‚Р°СЋС‰РµРµ Р”Р°РІР»РµРЅРёРµ PSS
+				 // Р±СѓРґРµС‚ РѕРїСЂРµРґРµР»РµРЅРѕ СЃ РїРѕРјРѕС‰СЊСЋ 
+				 // РєРІР°РґСЂР°С‚РёС‡РЅРѕР№ СЌРєСЃС‚СЂР°РїРѕР»СЏС†РёРё.
 				Real yN, yP, yS, yN2, yP2, yS2, ySS;
-				// при условии отсутствия узла iSS узел iN всегда существует.
+				// РїСЂРё СѓСЃР»РѕРІРёРё РѕС‚СЃСѓС‚СЃС‚РІРёСЏ СѓР·Р»Р° iSS СѓР·РµР» iN РІСЃРµРіРґР° СЃСѓС‰РµСЃС‚РІСѓРµС‚.
 				yN = 0.25 * (y[nvtx[0][iN] - 1] + y[nvtx[1][iN] - 1] + y[nvtx[2][iN] - 1] + y[nvtx[3][iN] - 1]);
 				yP = 0.25 * (y[nvtx[0][iP] - 1] + y[nvtx[1][iP] - 1] + y[nvtx[2][iP] - 1] + y[nvtx[3][iP] - 1]);
 				yS = 0.25 * (y[nvtx[0][iS] - 1] + y[nvtx[1][iS] - 1] + y[nvtx[2][iS] - 1] + y[nvtx[3][iS] - 1]);
@@ -989,7 +989,7 @@ void my_elmatr_quad_PAm(int iP, equation**& sl, int** &nvtx, bool** &boundary,
 				B[0][0] = 1.0; B[0][1] = yS; B[0][2] = yS2;
 				B[1][0] = 1.0; B[1][1] = yP; B[1][2] = yP2;
 				B[2][0] = 1.0; B[2][1] = yN; B[2][2] = yN2;
-				inverse_matrix_simple(B, 3, false); // обращает матрицу
+				inverse_matrix_simple(B, 3, false); // РѕР±СЂР°С‰Р°РµС‚ РјР°С‚СЂРёС†Сѓ
 				ySS = yS - dys;
 				Real PN, PP, PS;
 				PN = potent[Press][iN]; PP = potent[Press][iP]; PS = potent[Press][iS];
@@ -1010,11 +1010,11 @@ void my_elmatr_quad_PAm(int iP, equation**& sl, int** &nvtx, bool** &boundary,
 				FsRhie_Chow -= koef * (potent[Press][iP] - potent[Press][iS]) / apvs;
 			}
 			else {
-				// узла iN нету.
-				// надо восстановить давление PN в узле iN с помощью
-				// квадратичной экстраполяции
+				// СѓР·Р»Р° iN РЅРµС‚Сѓ.
+				// РЅР°РґРѕ РІРѕСЃСЃС‚Р°РЅРѕРІРёС‚СЊ РґР°РІР»РµРЅРёРµ PN РІ СѓР·Р»Рµ iN СЃ РїРѕРјРѕС‰СЊСЋ
+				// РєРІР°РґСЂР°С‚РёС‡РЅРѕР№ СЌРєСЃС‚СЂР°РїРѕР»СЏС†РёРё
 				Real yP, yS, ySS, yP2, yS2, ySS2, yN;
-				// при условии отсутствия узла iE узел iWW всегда существует.
+				// РїСЂРё СѓСЃР»РѕРІРёРё РѕС‚СЃСѓС‚СЃС‚РІРёСЏ СѓР·Р»Р° iE СѓР·РµР» iWW РІСЃРµРіРґР° СЃСѓС‰РµСЃС‚РІСѓРµС‚.
 				ySS = 0.25 * (y[nvtx[0][iSS] - 1] + y[nvtx[1][iSS] - 1] + y[nvtx[2][iSS] - 1] + y[nvtx[3][iSS] - 1]);
 				yS = 0.25 * (y[nvtx[0][iS] - 1] + y[nvtx[1][iS] - 1] + y[nvtx[2][iS] - 1] + y[nvtx[3][iS] - 1]);
 				yP = 0.25 * (y[nvtx[0][iP] - 1] + y[nvtx[1][iP] - 1] + y[nvtx[2][iP] - 1] + y[nvtx[3][iP] - 1]);
@@ -1023,7 +1023,7 @@ void my_elmatr_quad_PAm(int iP, equation**& sl, int** &nvtx, bool** &boundary,
 				B[0][0] = 1.0; B[0][1] = ySS; B[0][2] = ySS2;
 				B[1][0] = 1.0; B[1][1] = yS; B[1][2] = yS2;
 				B[2][0] = 1.0; B[2][1] = yP; B[2][2] = yP2;
-				inverse_matrix_simple(B, 3, false); // обращает матрицу
+				inverse_matrix_simple(B, 3, false); // РѕР±СЂР°С‰Р°РµС‚ РјР°С‚СЂРёС†Сѓ
 				yN = yP + dyn;
 				Real PN, PS, PP;
 				PS = potent[Press][iS]; PP = potent[Press][iP];
@@ -1049,14 +1049,14 @@ void my_elmatr_quad_PAm(int iP, equation**& sl, int** &nvtx, bool** &boundary,
 			//else
 			{
 
-				// узлов iS и iSS нету
-				// давление в них определяется 
-				// с помощью квадратичной экстраполяции
-				Real PSS = 0.0; // давление в узле iSS
-				Real PS = 0.0; // давление в узле iS
+				// СѓР·Р»РѕРІ iS Рё iSS РЅРµС‚Сѓ
+				// РґР°РІР»РµРЅРёРµ РІ РЅРёС… РѕРїСЂРµРґРµР»СЏРµС‚СЃСЏ 
+				// СЃ РїРѕРјРѕС‰СЊСЋ РєРІР°РґСЂР°С‚РёС‡РЅРѕР№ СЌРєСЃС‚СЂР°РїРѕР»СЏС†РёРё
+				Real PSS = 0.0; // РґР°РІР»РµРЅРёРµ РІ СѓР·Р»Рµ iSS
+				Real PS = 0.0; // РґР°РІР»РµРЅРёРµ РІ СѓР·Р»Рµ iS
 				int iNN = sosed[NN][iP] - 1;
 				Real yP, yN, yNN, yP2, yN2, yNN2, yS, ySS;
-				// при условии отсутствия узлов iS и iSS узел iNN всегда существует
+				// РїСЂРё СѓСЃР»РѕРІРёРё РѕС‚СЃСѓС‚СЃС‚РІРёСЏ СѓР·Р»РѕРІ iS Рё iSS СѓР·РµР» iNN РІСЃРµРіРґР° СЃСѓС‰РµСЃС‚РІСѓРµС‚
 				yNN = 0.25 * (y[nvtx[0][iNN] - 1] + y[nvtx[1][iNN] - 1] + y[nvtx[2][iNN] - 1] + y[nvtx[3][iNN] - 1]);
 				yN = 0.25 * (y[nvtx[0][iN] - 1] + y[nvtx[1][iN] - 1] + y[nvtx[2][iN] - 1] + y[nvtx[3][iN] - 1]);
 				yP = 0.25 * (y[nvtx[0][iP] - 1] + y[nvtx[1][iP] - 1] + y[nvtx[2][iP] - 1] + y[nvtx[3][iP] - 1]);
@@ -1065,7 +1065,7 @@ void my_elmatr_quad_PAm(int iP, equation**& sl, int** &nvtx, bool** &boundary,
 				B[0][0] = 1.0; B[0][1] = yP; B[0][2] = yP2;
 				B[1][0] = 1.0; B[1][1] = yN; B[1][2] = yN2;
 				B[2][0] = 1.0; B[2][1] = yNN; B[2][2] = yNN2;
-				inverse_matrix_simple(B, 3, false); // обращает матрицу
+				inverse_matrix_simple(B, 3, false); // РѕР±СЂР°С‰Р°РµС‚ РјР°С‚СЂРёС†Сѓ
 				Real dyss = dys;
 				yS = yP - dys;
 				ySS = yS - dys;
@@ -1090,7 +1090,7 @@ void my_elmatr_quad_PAm(int iP, equation**& sl, int** &nvtx, bool** &boundary,
 				FsRhie_Chow -= koef * (potent[Press][iP] - PS) / apvs;
 			}
 		
-			// Поток задан пользователем, какой смысл его коректировать.
+			// РџРѕС‚РѕРє Р·Р°РґР°РЅ РїРѕР»СЊР·РѕРІР°С‚РµР»РµРј, РєР°РєРѕР№ СЃРјС‹СЃР» РµРіРѕ РєРѕСЂРµРєС‚РёСЂРѕРІР°С‚СЊ.
 			FsRhie_Chow *= mnull2;
         }
 
@@ -1098,7 +1098,7 @@ void my_elmatr_quad_PAm(int iP, equation**& sl, int** &nvtx, bool** &boundary,
 		//delete[] B;
 
 
-		 // коэффициенты диффузии:
+		 // РєРѕСЌС„С„РёС†РёРµРЅС‚С‹ РґРёС„С„СѓР·РёРё:
 		 Real GP1, GE1, GW1, GN1, GS1;
 		 Real Ge1, Gw1, Gn1, Gs1;
 		 int iVarDiffusion = Mu;
@@ -1115,14 +1115,14 @@ void my_elmatr_quad_PAm(int iP, equation**& sl, int** &nvtx, bool** &boundary,
 		 Gn1 = GN1 * GP1 / ((1 - fnplus) * GP1 + fnplus * GN1);
 		 Gs1 = GS1 * GP1 / ((1 - fsplus) * GP1 + fsplus * GS1);
 
-		 // Диффузионная составляющая потока:
+		 // Р”РёС„С„СѓР·РёРѕРЅРЅР°СЏ СЃРѕСЃС‚Р°РІР»СЏСЋС‰Р°СЏ РїРѕС‚РѕРєР°:
 		 Real De1 = 1.0, Dw1 = 1.0, Dn1 = 1.0, Ds1 = 1.0;
 		 if ((!bE)&&(iE>-1)) De1 = Ge1 * qass[iP].dy_dxe;
 		 if ((!bW) && (iW > -1)) Dw1 = Gw1 * qass[iP].dy_dxw;
 		 if ((!bN) && (iN > -1)) Dn1 = Gn1 * qass[iP].dx_dyn;
 		 if ((!bS) && (iS > -1)) Ds1 = Gs1 * qass[iP].dx_dys;
 
-		 // Числа Пекле:
+		 // Р§РёСЃР»Р° РџРµРєР»Рµ:
 		 Real Pe1=0.0, Pw1=0.0, Pn1=0.0, Ps1=0.0;
 		 if ((!bE) && (iE > -1))  Pe1 = fabs(Fe / De1);
 		 if ((!bW) && (iW > -1)) Pw1 = fabs(-Fw / Dw1);
@@ -1162,7 +1162,7 @@ void my_elmatr_quad_PAm(int iP, equation**& sl, int** &nvtx, bool** &boundary,
 
 		if ((boundary[PAm][iP]) && (!neiman[PAm][iP])) {
 
-			// граничное условие Дирихле.
+			// РіСЂР°РЅРёС‡РЅРѕРµ СѓСЃР»РѕРІРёРµ Р”РёСЂРёС…Р»Рµ.
 			sl[PAm][iP].ae = 0.0;
 			sl[PAm][iP].aw = 0.0;
 			sl[PAm][iP].an = 0.0;
@@ -1178,8 +1178,8 @@ void my_elmatr_quad_PAm(int iP, equation**& sl, int** &nvtx, bool** &boundary,
 		/*else  if ((boundary[PAm][iP]) && (neiman[PAm][iP])) {
 
 			switch (norm[0][iP]) {
-			case E: //E узла нет
-				// граничное условие Неймана однородное.
+			case E: //E СѓР·Р»Р° РЅРµС‚
+				// РіСЂР°РЅРёС‡РЅРѕРµ СѓСЃР»РѕРІРёРµ РќРµР№РјР°РЅР° РѕРґРЅРѕСЂРѕРґРЅРѕРµ.
 				sl[PAm][iP].ae = 0.0;
 				sl[PAm][iP].aw = -1.0;
 				sl[PAm][iP].an = 0.0;
@@ -1187,8 +1187,8 @@ void my_elmatr_quad_PAm(int iP, equation**& sl, int** &nvtx, bool** &boundary,
 				sl[PAm][iP].ap = 1.0;
 				sl[PAm][iP].b = 0.0;
 				break;
-			case N: //N узла нет
-				// граничное условие Неймана однородное.
+			case N: //N СѓР·Р»Р° РЅРµС‚
+				// РіСЂР°РЅРёС‡РЅРѕРµ СѓСЃР»РѕРІРёРµ РќРµР№РјР°РЅР° РѕРґРЅРѕСЂРѕРґРЅРѕРµ.
 				sl[PAm][iP].ae = 0.0;
 				sl[PAm][iP].aw = 0.0;
 				sl[PAm][iP].an = 0.0;
@@ -1197,8 +1197,8 @@ void my_elmatr_quad_PAm(int iP, equation**& sl, int** &nvtx, bool** &boundary,
 				sl[PAm][iP].b = 0.0;
 
 				break;
-			case W: //W узла нет
-				// граничное условие Неймана однородное.
+			case W: //W СѓР·Р»Р° РЅРµС‚
+				// РіСЂР°РЅРёС‡РЅРѕРµ СѓСЃР»РѕРІРёРµ РќРµР№РјР°РЅР° РѕРґРЅРѕСЂРѕРґРЅРѕРµ.
 				sl[PAm][iP].ae = -1.0;
 				sl[PAm][iP].aw = 0.0;
 				sl[PAm][iP].an = 0.0;
@@ -1207,8 +1207,8 @@ void my_elmatr_quad_PAm(int iP, equation**& sl, int** &nvtx, bool** &boundary,
 				sl[PAm][iP].b = 0.0;
 
 				break;
-			case S: //S узла нет
-				// граничное условие Неймана однородное.
+			case S: //S СѓР·Р»Р° РЅРµС‚
+				// РіСЂР°РЅРёС‡РЅРѕРµ СѓСЃР»РѕРІРёРµ РќРµР№РјР°РЅР° РѕРґРЅРѕСЂРѕРґРЅРѕРµ.
 				sl[PAm][iP].ae = 0.0;
 				sl[PAm][iP].aw = 0.0;
 				sl[PAm][iP].an = -1.0;
@@ -1217,7 +1217,7 @@ void my_elmatr_quad_PAm(int iP, equation**& sl, int** &nvtx, bool** &boundary,
 				sl[PAm][iP].b = 0.0;
 
 				break;
-			} // первая нормаль
+			} // РїРµСЂРІР°СЏ РЅРѕСЂРјР°Р»СЊ
 
 
 		}*/
@@ -1236,8 +1236,8 @@ void my_elmatr_quad_PAm(int iP, equation**& sl, int** &nvtx, bool** &boundary,
 		//Real deltat = 1e-6 * dx * dy * alpha[Press] / ((sl[PAm][iP].ae + sl[PAm][iP].aw + sl[PAm][iP].an + sl[PAm][iP].as) * (1 - alpha[Press]));
 		//sl[PAm][iP].b = (Fw - Fe + Fs - Fn);// +0.1 * (FwRhie_Chow - FeRhie_Chow + FsRhie_Chow - FnRhie_Chow);
 		
-		// Должно быть -130, +530 Re=400.
-		// без *dx*dy делю на dxe -271000 397520
+		// Р”РѕР»Р¶РЅРѕ Р±С‹С‚СЊ -130, +530 Re=400.
+		// Р±РµР· *dx*dy РґРµР»СЋ РЅР° dxe -271000 397520
 
 		sl[PAm][iP].b = 0.0;
 		if (((!bW) && (!bE) && (iW > -1) && (iE > -1))&&((!bS) && (!bN) && (iS > -1) && (iN > -1))) {//*dx*dy
@@ -1256,7 +1256,7 @@ void my_elmatr_quad_PAm(int iP, equation**& sl, int** &nvtx, bool** &boundary,
 			Flux_gran_relx[S][iP] = 0.0;
 			Flux_gran_relx[N][iP] = 0.0;
 		}
-		// Это имеет смысл.
+		// Р­С‚Рѕ РёРјРµРµС‚ СЃРјС‹СЃР».
 		//sl[PAm][iP].b = ((bE || bW ? 0.0 : Fw - Fe) + (bN || bS ? 0.0 : Fs - Fn));
 		//sl[PAm][iP].b += ((bE || bW ? 0.0 : RCh *(FwRhie_Chow - FeRhie_Chow)) + (bN || bS ? 0.0 : RCh *(FsRhie_Chow - FnRhie_Chow)));
 		
