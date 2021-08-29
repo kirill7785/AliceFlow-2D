@@ -23,36 +23,36 @@ const int Vycor = 6; // уравнению неразрывности
 
 
 // схемы для аппроксимации конвекции-диффузии (старые)
-#define CR 1 // Центрально-разностная
-#define UDS 2 // Противопоточная первого порядка
-#define COMB 3 // Комбинированная 
-#define POLY 4 // Полиномиальная C. Патанкара
-#define EXP 5 // экспоненциальная схема
-#define BULG 6 // схема В.К. Булгакова (23) из статьи
-#define POW 7 // показательная
+const int CR = 1; // Центрально-разностная
+const int UDS = 2; // Противопоточная первого порядка
+const int COMB = 3; // Комбинированная 
+const int POLY = 4; // Полиномиальная C. Патанкара
+const int EXP = 5; // экспоненциальная схема
+const int BULG = 6; // схема В.К. Булгакова (23) из статьи
+const int POW = 7; // показательная
 
 // схемы для аппроксимации конвекции-диффузии (новые)
-#define CR2 100 // Центральные разности
-#define UDS2 101 // Противопоточная первого порядка
-#define EXP2 102 // экспоненциальная схема (точная)
-#define KUD 103 // схема предложенная в диссертации Кудинова Павла Ивановича
+const int CR2 = 100; // Центральные разности
+const int UDS2 = 101; // Противопоточная первого порядка
+const int EXP2 = 102; // экспоненциальная схема (точная)
+const int KUD = 103; // схема предложенная в диссертации Кудинова Павла Ивановича
 
-#define distsheme 100 // константа перехода от новой схемы к новой
+const int distsheme = 100; // константа перехода от новой схемы к новой
 
-#define Rho 0 // плотность
-#define Cp 1 // теплоёмкость
-#define Lam 2 // теплопроводность
-#define Mu 3 // динамическая вязкость
-#define BETA_T 4 // коэффициент линейного температурного расширения
+const int Rho = 0; // плотность
+const int Cp = 1; // теплоёмкость
+const int Lam = 2; // теплопроводность
+const int Mu = 3;  // динамическая вязкость
+const int BETA_T = 4; // коэффициент линейного температурного расширения
 
-#define E 0 // (east) восток
-#define N 1 // север
-#define W 2 // запад
-#define S 3 // юг
-#define EE 4
-#define NN 5 
-#define WW 6
-#define SS 7
+const int E = 0; // (east) восток
+const int N = 1; // север
+const int W = 2; // запад
+const int S = 3; // юг
+const int EE = 4;
+const int NN = 5;
+const int WW = 6;
+const int SS = 7;
 const int maxsos = 8; // максимальное число соседей
 
 
@@ -419,16 +419,16 @@ void init_qass(int maxelm, int** &sosed, int** &nvtx, Real* &x, Real* &y, int nv
 
 		if (qass[iP].dx <= 0) {
 			std::cout << " dx=" << qass[iP].dx << std::endl;
-			getchar();
+			system("PAUSE");
 		}
 		if (qass[iP].dy <= 0) {
 			std::cout << " dy=" << qass[iP].dy << std::endl;
-			getchar();
+			system("PAUSE");
 		}
 
 		if (qass[iP].dxe < 1.0e-20) {
 			printf("zero dxe=%e iE=%d iP=%d\n", qass[iP].dxe, qass[iP].iE, iP);
-			getchar();
+			system("PAUSE");
 		}
 
 		if (qass[iP].dx != qass[iP].dx) std::cout << "dy=" << qass[iP].dy << " dxe=" << qass[iP].dxe << std::endl;

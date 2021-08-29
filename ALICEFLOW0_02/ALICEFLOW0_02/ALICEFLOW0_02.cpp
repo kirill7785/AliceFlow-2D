@@ -47,7 +47,7 @@
 #include <windows.h> // для функции WinExec
 #include <time.h> // для скорости выполнения
 
-#define Real double // float
+typedef double Real; // float
 Real Cp_active = 1.0;
 Real Pe_max = 0.0;
 Real Re_max = 0.0;
@@ -242,7 +242,7 @@ void solve(int iVar, Real& res, Real***& B) {
 		for (int i_1 = 0; i_1 < maxelm; ++i_1) {
 			int tid = omp_get_thread_num();
 
-			calc_tau(i_1, slau, nvtx, boundary, potent, sumanb, Flux_gran, Flux_gran_relx, tau, x, y, prop, sosed, neiman, norm, nve, alpha, B[tid]);//псевдовремя.
+			calc_tau(i_1, slau, nvtx, boundary, potent, sumanb, Flux_gran, Flux_gran_relx, tau, x, y, prop, sosed, neiman, norm, nve, alpha, B[tid]); //псевдовремя.
 		}
 		if (0) {
 			// При высокой скорости течения ни в коем случае не осреднять псевдовремя.
@@ -380,10 +380,12 @@ void solve(int iVar, Real& res, Real***& B) {
 	else {
 
 		if (iVar == Temp) {
+#ifdef SOLOVEICHIC_SPEED
 			// выделение памяти и инициализация для 
 			// простейшей разреженной матрицы.
-			//initsimplesparse(sparseM, maxelm);
-			//initIMatrix(&sparseS, maxelm);
+			initsimplesparse(sparseM, maxelm);
+			initIMatrix(&sparseS, maxelm);
+#endif
 		}
 		else {
 
@@ -396,32 +398,50 @@ void solve(int iVar, Real& res, Real***& B) {
 		}
 	}
 	
-#pragma omp parallel for
+#pragma omp parallel for // НЕ использовать omp при включённом SOLOVEICHIC_SPEED
 	for (int i=0; i<maxelm; ++i) {
 		switch (iVar) {
 			case Vx : 
+
+				if (!(boundary[Vx][i])) {
 #ifdef SOLOVEICHIC_SPEED
 				addelmsimplesparse(sparseM, slau[iVar][i].ap/alpha[iVar], slau[iVar][i].iP, slau[iVar][i].iP, true);
 				setValueIMatrix(&sparseS,slau[iVar][i].iP, slau[iVar][i].iP, slau[iVar][i].ap/alpha[iVar]);
 #endif
-					  if (!(boundary[Vx][i])) {
+					  
 						  rthdsd[slau[iVar][i].iP] = slau[iVar][i].b + (1 - alpha[iVar]) * slau[iVar][i].ap * potent[Vxcor][slau[iVar][i].iP] / alpha[iVar];
 						  slau[iVar][i].ap /= alpha[iVar];
 					  }
 					  else {
+
+#ifdef SOLOVEICHIC_SPEED
+					addelmsimplesparse(sparseM, slau[iVar][i].ap, slau[iVar][i].iP, slau[iVar][i].iP, true);
+					setValueIMatrix(&sparseS, slau[iVar][i].iP, slau[iVar][i].iP, slau[iVar][i].ap);
+#endif
+
 						  rthdsd[slau[iVar][i].iP] = slau[iVar][i].b;
 					  }
 					  break;
 			case Vy : 
+
+				if (!(boundary[Vy][i])) {
+
 #ifdef SOLOVEICHIC_SPEED
 				addelmsimplesparse(sparseM, slau[iVar][i].ap/alpha[iVar], slau[iVar][i].iP, slau[iVar][i].iP, true);
                 setValueIMatrix(&sparseS,slau[iVar][i].iP, slau[iVar][i].iP,slau[iVar][i].ap/alpha[iVar]);
 #endif
-					  if (!(boundary[Vy][i])) {
+					  
 						  rthdsd[slau[iVar][i].iP] = slau[iVar][i].b + (1 - alpha[iVar]) * slau[iVar][i].ap * potent[Vycor][slau[iVar][i].iP] / alpha[iVar];
 						  slau[iVar][i].ap /= alpha[iVar];
 					  }
 					  else {
+
+#ifdef SOLOVEICHIC_SPEED
+					addelmsimplesparse(sparseM, slau[iVar][i].ap, slau[iVar][i].iP, slau[iVar][i].iP, true);
+					setValueIMatrix(&sparseS, slau[iVar][i].iP, slau[iVar][i].iP, slau[iVar][i].ap);
+#endif
+
+
 						  rthdsd[slau[iVar][i].iP] = slau[iVar][i].b;
 					  }
 					  break;
@@ -435,15 +455,19 @@ void solve(int iVar, Real& res, Real***& B) {
 				
 
 				if (!(boundary[Temp][i])) {
-					//addelmsimplesparse(sparseM, slau[iVar][i].ap / alpha[iVar], slau[iVar][i].iP, slau[iVar][i].iP, true);
-					//setValueIMatrix(&sparseS, slau[iVar][i].iP, slau[iVar][i].iP, slau[iVar][i].ap / alpha[iVar]);
+#ifdef SOLOVEICHIC_SPEED
+					addelmsimplesparse(sparseM, slau[iVar][i].ap / alpha[iVar], slau[iVar][i].iP, slau[iVar][i].iP, true);
+					setValueIMatrix(&sparseS, slau[iVar][i].iP, slau[iVar][i].iP, slau[iVar][i].ap / alpha[iVar]);
+#endif
 
 					rthdsd[slau[iVar][i].iP] = slau[iVar][i].b + (1 - alpha[iVar]) * slau[iVar][i].ap * potent[Temp][slau[iVar][i].iP] / alpha[iVar];
 					slau[iVar][i].ap /= alpha[iVar];
 				}
 				else {
-					//addelmsimplesparse(sparseM, slau[iVar][i].ap, slau[iVar][i].iP, slau[iVar][i].iP, true);
-					//setValueIMatrix(&sparseS, slau[iVar][i].iP, slau[iVar][i].iP, slau[iVar][i].ap);
+#ifdef SOLOVEICHIC_SPEED
+					addelmsimplesparse(sparseM, slau[iVar][i].ap, slau[iVar][i].iP, slau[iVar][i].iP, true);
+					setValueIMatrix(&sparseS, slau[iVar][i].iP, slau[iVar][i].iP, slau[iVar][i].ap);
+#endif
 
 					rthdsd[slau[iVar][i].iP] = slau[iVar][i].b;
 				}
@@ -487,8 +511,9 @@ void solve(int iVar, Real& res, Real***& B) {
 		else {
 
 			if (iVar == Temp) {
-				/*
-				* // Не работает в многопоточном режиме.
+
+#ifdef SOLOVEICHIC_SPEED
+				// Не работает в многопоточном режиме.
 				if ((slau[iVar][i].iE > -1) && (fabs(slau[iVar][i].ae) > nonzeroEPS)) {
 					addelmsimplesparse(sparseM, -slau[iVar][i].ae, slau[iVar][i].iP, slau[iVar][i].iE, true);
 					setValueIMatrix(&sparseS, slau[iVar][i].iP, slau[iVar][i].iE, -slau[iVar][i].ae);
@@ -504,7 +529,8 @@ void solve(int iVar, Real& res, Real***& B) {
 				if ((slau[iVar][i].iW > -1) && (fabs(slau[iVar][i].aw) > nonzeroEPS)) {
 					addelmsimplesparse(sparseM, -slau[iVar][i].aw, slau[iVar][i].iP, slau[iVar][i].iW, true);
 					setValueIMatrix(&sparseS, slau[iVar][i].iP, slau[iVar][i].iW, -slau[iVar][i].aw);
-				}*/
+				}
+#endif
 			}
 			else {
 
@@ -618,29 +644,35 @@ void solve(int iVar, Real& res, Real***& B) {
 	// 2.2.2 Методы для CRS (CSIR, CSIR_ITL) формата возможно несимметричный случай.
 	if (iVar != PAm) {
 		// разреженная матрица в формате CRS
-		Real* val = nullptr;
-		int* col_ind = nullptr, * row_ptr = nullptr;
+		//Real* val = nullptr;
+		//int* col_ind = nullptr, * row_ptr = nullptr;
 
 		if (iVar == Temp) {
+#ifdef SOLOVEICHIC_SPEED
 			//simplesparsetoCRS(sparseM, val, col_ind, row_ptr, maxelm);
+#endif
 		}
 		else {
 
 #ifdef SOLOVEICHIC_SPEED
-			simplesparsetoCRS(sparseM, val, col_ind, row_ptr, maxelm);
+			//simplesparsetoCRS(sparseM, val, col_ind, row_ptr, maxelm);
 #endif
 		}
-		int maxiter = MAXIT;
+		int maxiter = 1000;// MAXIT;
 		//system("pause");
 
 		//if (iVar==PAm) maxiter=2000;
 		switch (iSOLVER) {
-		case BICGCRS: potent[iVar] = BiSoprGradCRS(val, col_ind, row_ptr, rthdsd, potent[iVar], maxelm, maxiter); break;
+		case BICGCRS: //potent[iVar] = BiSoprGradCRS(val, col_ind, row_ptr, rthdsd, potent[iVar], maxelm, maxiter); 
+			break;
 		case SOLOVALGCRS:
 
 			if (iVar == Temp) {
-				//SoloveichikAlg(&sparseS, sparseM, rthdsd, potent[iVar], true, maxiter);
+#ifdef SOLOVEICHIC_SPEED
+				SoloveichikAlg(&sparseS, sparseM, rthdsd, potent[iVar], true, maxiter);
+#else
 				SOR(slau[iVar], potent[iVar], rthdsd, maxelm, Temp);
+#endif
 			}
 			else {
 #ifdef SOLOVEICHIC_SPEED
@@ -658,17 +690,19 @@ void solve(int iVar, Real& res, Real***& B) {
 #endif
 			}
 			break;
-		case BICGSTABCRS: potent[iVar] = Bi_CGStab(maxelm, val, col_ind, row_ptr, rthdsd, potent[iVar], maxiter); break;
-		default: potent[iVar] = Bi_CGStab(maxelm, val, col_ind, row_ptr, rthdsd, potent[iVar], maxiter); break;
+		case BICGSTABCRS: //potent[iVar] = Bi_CGStab(maxelm, val, col_ind, row_ptr, rthdsd, potent[iVar], maxiter); 
+			break;
+		default: //potent[iVar] = Bi_CGStab(maxelm, val, col_ind, row_ptr, rthdsd, potent[iVar], maxiter);
+			break;
 		}
 
 		if (iVar == Temp) {
-			delete[] val; delete[] col_ind; delete[] row_ptr;
-	}
+			//delete[] val; delete[] col_ind; delete[] row_ptr;
+	    }
 		else {
 
 #ifdef SOLOVEICHIC_SPEED
-			delete[] val; delete[] col_ind; delete[] row_ptr;
+			//delete[] val; delete[] col_ind; delete[] row_ptr;
 #endif
 		}
 	}
@@ -691,10 +725,12 @@ void solve(int iVar, Real& res, Real***& B) {
 	}
 	else {
 		if (iVar == Temp) {
-			//simplesparsefree(sparseM, maxelm);
+#ifdef SOLOVEICHIC_SPEED
+			simplesparsefree(sparseM, maxelm);
 			//system("pause");
-			//freeIMatrix(&sparseS);
+			freeIMatrix(&sparseS);
 			//system("pause");
+#endif
 		}
 		else {
 
@@ -815,7 +851,7 @@ void my_version_SIMPLE_Algorithm(Real& continity, Real*** &B) {
     if (DEBUG) printf("Temp\n");
 	solve(Temp,res,B);
 
-	if (DEBUG) getchar();
+	if (DEBUG) system("PAUSE");
 
 	//exporttecplotxy360( nve, maxelm, ncell, nvtx, nvtxcell, x, y, potent, rhie_chow);
 	//system("pause");

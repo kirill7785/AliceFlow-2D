@@ -1372,7 +1372,7 @@ void eqsolve_lenta_gauss(Real **A, int nodes, int icolx, Real *b, Real *x) {
 			// применяется только в том случае
 			// если элемент ненулевой
 			// это должно несколько ускорить счёт.
-			if (fabs(A[i][k+move[i]]) > eps) {
+			if ((i>=0)&&(i<nodes)&&(fabs(A[i][k+move[i]]) > eps)) {
                
                 if(fabs(A[k][k+move[k]])<eps){
 			          // решение не может быть получено, т.к.
@@ -2014,17 +2014,12 @@ Real *BiSoprGradCRS(Real *val, int* col_ind, int* row_ptr, Real *dV, Real *x, in
 Real* inverseL(Real* f, Real* ldiag, Real* lltr, int* jptr, int* iptr, int n) {
 	Real *z=new Real[n];
 
-    if (z == nullptr)
-	{
-		printf("malloc: out of memory for vector z in inverse(L)*f \n"); // нехватка памяти
-		system("pause");
-		exit(0);
-		return nullptr; // завершение программы
+	for (int i = 0; i < n; i++) {
+		z[i] = 0.0;
 	}
 
-	int i,j;
-	for (i=0; i<n; i++) {
-		for (j=iptr[i]; j<iptr[i+1]; j++) {
+	for (int i=0; i<n; i++) {
+		for (int j=iptr[i]; j<iptr[i+1]; j++) {
 			f[i]-=z[jptr[j]]*lltr[j];
 		}
 		z[i]=f[i]/ldiag[i];
@@ -2064,18 +2059,15 @@ void inverseL_ITL0(Real* f, Real* val, int* indx, int* pntr, Real* &z, int n) {
     if (z == NULL)
 	{
 		Real *z=new Real[n];
-		if (z==NULL) {
-			printf("malloc: out of memory for vector z in inverse(L)*f \n"); // нехватка памяти
-		    system("pause");
-		    exit(0); // завершение программы
+		for (int i = 0; i < n; i++) {
+			z[i] = 0.0;
 		}
 	}
 
-	int i,j;
-	for (i=0; i<n; i++) {
-        z[i]=f[i]/val[pntr[i]];
-		// оьработка i-го столбца
-		for (j=pntr[i]+1; j<pntr[i+1]; j++) {
+	for (int i=0; i<n; i++) {
+        z[i] = f[i]/val[pntr[i]];
+		// обработка i-го столбца
+		for (int j=pntr[i]+1; j<pntr[i+1]; j++) {
 			f[indx[j]]-=z[i]*val[j];
 		}
 		
@@ -3980,11 +3972,13 @@ Real *SoprGradCSIR2(Real* adiag, Real* altr, int* jptr, int* iptr, Real *dV, Rea
 	   } // while
 
 	   // Освобождение памяти
-        delete[] ap; delete[] vcopy;
+        delete[] ap; 
 		delete[] z; delete[] p;
 
 		for(i=0;i<n;i++) vcopy[i]=x[i]; delete[] x;
 		x=inverseU(vcopy, ldiag, lltr, jptrsort, iptr, n);
+
+		delete[] vcopy;
 	   return x;
 	}
 	else {
@@ -4636,6 +4630,7 @@ void addelmsimplesparse(SIMPLESPARSE &M, Real aij, int i, int j, bool bset) {
 		q->next=M.root[i];
 		M.root[i]=q;
 		q=NULL;
+//#pragma atomic
 		M.n++; // количество ненулевых элементов увеличилось на 1. 
 	}
 } // addelmsimplesparse
@@ -4906,8 +4901,15 @@ void simplesparsetoCRS(SIMPLESPARSE &M, Real* &val, int* &col_ind, int* &row_ptr
         for (k=0; k<nodes; k++) {
 			p=M.root[k];
 			while (p!=NULL) {
-				val[ik]=p->aij;
-				col_ind[ik]=p->key;
+				if (ik < M.n) {
+					val[ik] = p->aij;
+					col_ind[ik] = p->key;
+				}
+				else {
+					std::cout << " val and col_ind overflow in function simplesparsetoCRS in module my_linalg.cpp\n";
+					system("PAUSE");
+					exit(1);
+				}
                 row_ptr[k]=min(ik,row_ptr[k]);
 				ik++;
 				p=p->next;
@@ -5380,11 +5382,13 @@ void SoloveichikAlg( IMatrix *xO, SIMPLESPARSE &M,// Разреженная ма
 	int isize = xO->n;// размер квадратной матрицы
 	 // Разреженная матрица СЛАУ
 	 // в CRS формате.
-     Real *val;
-     int* col_ind, *row_ptr;
+     Real *val=nullptr;
+     int* col_ind=nullptr, *row_ptr=nullptr;
 
 	 // преобразование из SIMPLESPARSE формата в CRS формат хранения.
 	 simplesparsetoCRS(M, val, col_ind, row_ptr, isize);
+
+	 if (DEBUG) printf("Convert to CRS format Ok...\n");
 
 	 // ILU предобуславливатель:
      Real *U_val, *L_val;

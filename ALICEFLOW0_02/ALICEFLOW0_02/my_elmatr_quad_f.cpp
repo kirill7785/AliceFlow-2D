@@ -18,31 +18,31 @@
 
 #include "my_approx_convective2.cpp" // аппроксимация конвективного и диффузионного члена
 
-#define Real double // float
+//#define Real double // float
 
 // Искомые величины
-#define Temp 0 // температура
-#define Vx 1 // горизонтальная скорость
-#define Vy 2 // вертикальная скорость
-#define Press 3 // давление
-#define PAm  4 // поправка давления 
+//#define Temp 0 // температура
+//#define Vx 1 // горизонтальная скорость
+//#define Vy 2 // вертикальная скорость
+//#define Press 3 // давление
+//#define PAm  4 // поправка давления 
 
-#define distsheme 100 // константа перехода от новой схемы к новой
+//#define distsheme 100 // константа перехода от новой схемы к новой
 
-#define Rho 0 // плотность
-#define Cp 1 // теплоёмкость
-#define Lam 2 // теплопроводность
-#define Mu 3 // динамическая вязкость
-#define BETA_T 4 // коэффициент линейного температурного расширения
+//#define Rho 0 // плотность
+//#define Cp 1 // теплоёмкость
+//#define Lam 2 // теплопроводность
+//#define Mu 3 // динамическая вязкость
+//#define BETA_T 4 // коэффициент линейного температурного расширения
 
-#define E 0 // (east) восток
-#define N 1 // север
-#define W 2 // запад
-#define S 3 // юг
-#define EE 4
-#define NN 5 
-#define WW 6
-#define SS 7
+//#define E 0 // (east) восток
+//#define N 1 // север
+//#define W 2 // запад
+//#define S 3 // юг
+//#define EE 4
+//#define NN 5 
+//#define WW 6
+//#define SS 7
 
 
 

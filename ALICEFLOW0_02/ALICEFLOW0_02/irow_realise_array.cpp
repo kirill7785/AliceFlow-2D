@@ -225,13 +225,27 @@ void add(TERM* &list, int &n, int &pool, int num, Real val) {
 			// Обратное копирование
             // с сохранением упорядоченности
 			i1=0;
-			while ((list[i1].key<num) && (i1<n)) {
+			while ((i1 < n) && (listloc[i1].key<num)) {
 				list[i1]=listloc[i1];
 				i1++;
 			}
-			list[i1].key=num;
-			list[i1].val=val;
-			for (int i2=i1+1; i2<n+1; i2++) list[i2]=listloc[i2-1];
+			if (i1 >= pool) {
+				std::cout << "list is overflow in function add in module irow_realise_array.cpp\n";
+				system("PAUSE");
+				exit(1);
+			}
+			else {
+				list[i1].key = num;
+				list[i1].val = val;
+			}
+			for (int i2 = i1 + 1; i2 < n + 1; i2++) {
+				if (i2 >= pool) {
+					std::cout << "list is overflow in function add in module irow_realise_array.cpp\n";
+					system("PAUSE");
+					exit(1);
+				}
+				list[i2] = listloc[i2 - 1];
+			}
 			n++;
 
 

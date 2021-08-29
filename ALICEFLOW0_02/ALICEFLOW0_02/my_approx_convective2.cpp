@@ -5,13 +5,13 @@
 #ifndef MY_APPROX_CONVECTIVE2_CPP
 #define MY_APPROX_CONVECTIVE2_CPP 1
 
-#define Real double // float
+//#define Real double // float
 
 // схемы для аппроксимации конвекции-диффузии
-#define CR2 100 // Центральные разности
-#define UDS2 101 // Противопоточная первого порядка
-#define EXP2 102 // экспоненциальная схема (точная)
-#define KUD 103 // схема предложенная в диссертации Кудинова Павла Ивановича
+//#define CR2 100 // Центральные разности
+//#define UDS2 101 // Противопоточная первого порядка
+//#define EXP2 102 // экспоненциальная схема (точная)
+//#define KUD 103 // схема предложенная в диссертации Кудинова Павла Ивановича
 
 Real fC(Real Pe, int isheme) {
 	Real r=1.0;

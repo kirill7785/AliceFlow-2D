@@ -1136,7 +1136,7 @@ void my_elmatr_quad_PAm(int iP, equation**& sl, int** &nvtx, bool** &boundary,
 			 std::wcout << De1 << " " << Dw1 << " " << Dn1 << " " << Ds1 << " " << std::endl;
 			 std::wcout << Ge1 << " " << Gw1 << " " << Gn1 << " " << Gs1 << " " << std::endl;
 			 std::wcout << Fe << " " << Fw << " " << Fn << " " << Fs << " " << std::endl;
-			 getchar();
+			 system("PAUSE");
 		 }
 
 		 Real lim_Re = sqrt(dx * dy) * sqrt(potent[Vxcor][iP] * potent[Vxcor][iP] + potent[Vycor][iP] * potent[Vycor][iP])*prop[Rho][iP] / prop[Mu][iP];

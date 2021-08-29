@@ -1,14 +1,14 @@
-// Файл my_export_tecplot2.c передача результатов
+// Файл my_export_tecplot2.cpp передача результатов
 // моделирования в программу tecplot360
 
 #pragma once
-#ifndef MY_EXPORT_TECPLOT2_C
-#define MY_EXPORT_TECPLOT2_C 1
+#ifndef MY_EXPORT_TECPLOT2_CPP
+#define MY_EXPORT_TECPLOT2_CPP 1
 
 // проверка построеной сетки
 // экспорт результата расчёта в программу tecplot360
 // универсально подходит и для треугольных и для квадратных ячеек.
-void exporttecplotxy360(int nve, int maxelm, int ncell, int** nvtx, int** nvtxcell, Real* x, Real* y, Real** potent)
+void exporttecplotxy360(int nve, int maxelm, int ncell, int** &nvtx, int** &nvtxcell, Real* &x, Real* &y, Real** &potent)
 {
 	FILE *fp;
 	errno_t err;

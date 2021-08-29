@@ -355,14 +355,28 @@ void convertIMatrixtoCSIR_ILU_ITL(IMatrix *xO, Real* &U_val, int* &U_ind, int* &
 				}
 
 		for (j=0; j<rowIndexesLength; j++) {
-			U_val[ik]=rowValues[j]; // ненулевое значение
-			U_ind[ik]=rowIndexes[j]; // номер столбца
+			if (ik < nz) {
+				U_val[ik] = rowValues[j]; // ненулевое значение
+				U_ind[ik] = rowIndexes[j]; // номер столбца
+			}
+			else {
+				std::cout << "U_val and U_ind is overflow in function convertIMatrixtoCSIR_ILU_ITL in module sparse_gauss.cpp\n";
+				system("PAUSE");
+				exit(1);
+			}
 			U_ptr[i]=min(ik,U_ptr[i]);
 			ik++;
 		}
 		// диагональный элемент
-		U_val[ik]=xO->dd[i];
-        U_ind[ik]=i;
+		if (ik < nz) {
+			U_val[ik] = xO->dd[i];
+			U_ind[ik] = i;
+		}
+		else {
+			std::cout << "U_val and U_ind is overflow in function convertIMatrixtoCSIR_ILU_ITL in module sparse_gauss.cpp\n";
+			system("PAUSE");
+			exit(1);
+		}
         U_ptr[i]=min(ik,U_ptr[i]);
 		ik++;
 
@@ -374,8 +388,15 @@ void convertIMatrixtoCSIR_ILU_ITL(IMatrix *xO, Real* &U_val, int* &U_ind, int* &
 
 	}
     // Добавление последнего диагонального элемента
-	U_val[ik]=xO->dd[n-1];
-    U_ind[ik]=n-1;
+	if (ik < nz) {
+		U_val[ik] = xO->dd[n - 1];
+		U_ind[ik] = n - 1;
+	}
+	else {
+		std::cout << "U_val and U_ind is overflow in function convertIMatrixtoCSIR_ILU_ITL in module sparse_gauss.cpp\n";
+		system("PAUSE");
+		exit(1);
+	}
     U_ptr[n-1]=min(ik,U_ptr[n-1]);
 	ik++;
     
@@ -437,8 +458,15 @@ void convertIMatrixtoCSIR_ILU_ITL(IMatrix *xO, Real* &U_val, int* &U_ind, int* &
 		}
 	}
     // Добавление последнего диагонального элемента
-	L_val[ik]=xO->dd[n-1];
-    L_ind[ik]=n-1;
+	if (ik < nz) {
+		L_val[ik] = xO->dd[n - 1];
+		L_ind[ik] = n - 1;
+	}
+	else {
+		std::cout << "L_val and L_ind is overflow in function convertIMatrixtoCSIR_ILU_ITL in module sparse_gauss.cpp\n";
+		system("PAUSE");
+		exit(1);
+	}
     L_ptr[n-1]=min(ik,U_ptr[n-1]);
 	ik++;
 
