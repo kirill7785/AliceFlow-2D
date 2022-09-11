@@ -1,6 +1,6 @@
 # AliceFlow-2D
 
-![alt_text](https://raw.githubusercontent.com/kirill7785/AliceFlow-2D/main/pic/AliceFlow2D%20Навье%20Стокс1.bmp)
+![alt_text](https://raw.githubusercontent.com/kirill7785/AliceFlow-2D/main/pic/AliceFlow2D%20Навье%20Стокс_.bmp)
 
 AliceFlow 2D - двумерный гидродинамический решатель в переменных скорость, давление, температура.
 * 2D расчётная область произвольной формы с вырезами.
