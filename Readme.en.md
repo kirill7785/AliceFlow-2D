@@ -1,6 +1,6 @@
  # AliceFlow-2D
 
-![alt_text](https://raw.githubusercontent.com/kirill7785/AliceFlow-2D/main/pic/AliceFlow2D%20Навье%20Стокс_.bmp)
+![alt_text](https://raw.githubusercontent.com/kirill7785/AliceFlow-2D/main/pic/AliceFlow2D%20РќР°РІСЊРµ%20РЎС‚РѕРєСЃ_.bmp)
 
 AliceFlow-2D is a two-dimensional hydrodynamic solver in terms of velocity, pressure, and temperature.
 
@@ -36,44 +36,44 @@ Operating Systems: Windows 7; Windows 8, 8.1; Windows 10 (x64).
 
 ## Examples of problems solved in AliceFlow 2D
 * Flow in the computational domain "2021".
-![alt_text](https://github.com/kirill7785/AliceFlow-2D/blob/main/pic/Скорость%202021.jpg)
+![alt_text](https://github.com/kirill7785/AliceFlow-2D/blob/main/pic/РЎРєРѕСЂРѕСЃС‚СЊ%202021.jpg)
 Velocity, m/s
 
-![alt_text](https://github.com/kirill7785/AliceFlow-2D/blob/main/pic/Давление%202021.jpg)
+![alt_text](https://github.com/kirill7785/AliceFlow-2D/blob/main/pic/Р”Р°РІР»РµРЅРёРµ%202021.jpg)
 Pressure, Pa
 
 * Flow of coolant from right to left in a smoothly narrowing channel.
-![alt_text](https://raw.githubusercontent.com/kirill7785/AliceFlow-2D/main/pic/Скорость%20в%20сужающемся%20канале.bmp)
+![alt_text](https://raw.githubusercontent.com/kirill7785/AliceFlow-2D/main/pic/РЎРєРѕСЂРѕСЃС‚СЊ%20РІ%20СЃСѓР¶Р°СЋС‰РµРјСЃСЏ%20РєР°РЅР°Р»Рµ.bmp)
 Velocity, m/s
 
-![alt_text](https://raw.githubusercontent.com/kirill7785/AliceFlow-2D/main/pic/Давление%20в%20сужающемся%20канале.bmp)
+![alt_text](https://raw.githubusercontent.com/kirill7785/AliceFlow-2D/main/pic/Р”Р°РІР»РµРЅРёРµ%20РІ%20СЃСѓР¶Р°СЋС‰РµРјСЃСЏ%20РєР°РЅР°Р»Рµ.bmp)
 Pressure, Pa
 
 * Flow in the computational domain "21".
-![alt_text](https://raw.githubusercontent.com/kirill7785/AliceFlow-2D/main/pic/змеевик%20скорость.bmp)
+![alt_text](https://raw.githubusercontent.com/kirill7785/AliceFlow-2D/main/pic/Р·РјРµРµРІРёРє%20СЃРєРѕСЂРѕСЃС‚СЊ.bmp)
 Velocity, m/s
 
-![alt_text](https://raw.githubusercontent.com/kirill7785/AliceFlow-2D/main/pic/змеевик%20Давление.bmp)
+![alt_text](https://raw.githubusercontent.com/kirill7785/AliceFlow-2D/main/pic/Р·РјРµРµРІРёРє%20Р”Р°РІР»РµРЅРёРµ.bmp)
 Pressure, Pa
 
 * Growing crystals by the Bridgman method.
-![alt_text](https://raw.githubusercontent.com/kirill7785/AliceFlow-2D/main/pic/Скорость%20Бриджмен%202.bmp)
+![alt_text](https://raw.githubusercontent.com/kirill7785/AliceFlow-2D/main/pic/РЎРєРѕСЂРѕСЃС‚СЊ%20Р‘СЂРёРґР¶РјРµРЅ%202.bmp)
 Velocity, m/s
-![alt_text](https://raw.githubusercontent.com/kirill7785/AliceFlow-2D/main/pic/Давление%20Бриджмен%202.bmp)
+![alt_text](https://raw.githubusercontent.com/kirill7785/AliceFlow-2D/main/pic/Р”Р°РІР»РµРЅРёРµ%20Р‘СЂРёРґР¶РјРµРЅ%202.bmp)
 Pressure, Pa
-![alt_text](https://raw.githubusercontent.com/kirill7785/AliceFlow-2D/main/pic/Температура%20Бриджмен%202.bmp)
-Temperature, °C
+![alt_text](https://raw.githubusercontent.com/kirill7785/AliceFlow-2D/main/pic/РўРµРјРїРµСЂР°С‚СѓСЂР°%20Р‘СЂРёРґР¶РјРµРЅ%202.bmp)
+Temperature, В°C
 
 * Growing crystals by the Czochralski method.
-![alt_text](https://raw.githubusercontent.com/kirill7785/AliceFlow-2D/main/pic/Скорость%20Чохральский.bmp)
+![alt_text](https://raw.githubusercontent.com/kirill7785/AliceFlow-2D/main/pic/РЎРєРѕСЂРѕСЃС‚СЊ%20Р§РѕС…СЂР°Р»СЊСЃРєРёР№.bmp)
 Velocity, m/s
-![alt_text](https://raw.githubusercontent.com/kirill7785/AliceFlow-2D/main/pic/Давление%20Чохральский.bmp)
+![alt_text](https://raw.githubusercontent.com/kirill7785/AliceFlow-2D/main/pic/Р”Р°РІР»РµРЅРёРµ%20Р§РѕС…СЂР°Р»СЊСЃРєРёР№.bmp)
 Pressure, Pa
-![alt_text](https://raw.githubusercontent.com/kirill7785/AliceFlow-2D/main/pic/Температура%20%20Чохральский.bmp)
-Temperature, °C
+![alt_text](https://raw.githubusercontent.com/kirill7785/AliceFlow-2D/main/pic/РўРµРјРїРµСЂР°С‚СѓСЂР°%20%20Р§РѕС…СЂР°Р»СЊСЃРєРёР№.bmp)
+Temperature, В°C
 
 * Flow around a square cylinder.
-![alt_text](https://raw.githubusercontent.com/kirill7785/AliceFlow-2D/main/pic/Квадратный%20цилиндр%20RCh%200_0005.bmp)
+![alt_text](https://raw.githubusercontent.com/kirill7785/AliceFlow-2D/main/pic/РљРІР°РґСЂР°С‚РЅС‹Р№%20С†РёР»РёРЅРґСЂ%20RCh%200_0005.bmp)
 Velocity, m/s
-![alt_text](https://raw.githubusercontent.com/kirill7785/AliceFlow-2D/main/pic/Давление%20обтекание%20квадрата.bmp)
+![alt_text](https://raw.githubusercontent.com/kirill7785/AliceFlow-2D/main/pic/Р”Р°РІР»РµРЅРёРµ%20РѕР±С‚РµРєР°РЅРёРµ%20РєРІР°РґСЂР°С‚Р°.bmp)
 Pressure, Pa
